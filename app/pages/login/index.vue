@@ -52,7 +52,8 @@
               <a href="#" class="forgot-link">Forgot password?</a>
             </div>
 
-            <button type="submit" class="btn btn-primary">Sign In</button>
+            <button type="submit" class="btn btn-primary"
+              @click="signIn('credentials', { email: email, password: password, redirect: false })">Sign In</button>
           </form>
 
           <div class="signup-prompt">
@@ -66,6 +67,7 @@
 </template>
 
 <script setup lang="ts">
+const { signIn } = useAuth();
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)

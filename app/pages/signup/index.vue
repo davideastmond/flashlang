@@ -49,21 +49,25 @@
             <div class="form-group">
               <label for="email">Email</label>
               <input type="email" id="email" v-model="email" placeholder="your@email.com" required />
+              <p class="text-red" v-if="validationErrors.email">{{ validationErrors.email }}</p>
             </div>
 
             <div class="form-group">
               <label for="dateOfBirth">Date of Birth</label>
               <input type="date" id="dateOfBirth" v-model="dateOfBirth" required />
+              <p class="text-red-500" v-if="validationErrors.dateOfBirth">{{ validationErrors.dateOfBirth }}</p>
             </div>
 
             <div class="form-group">
-              <label for="password">Password</label>
-              <input type="password" id="password" v-model="password" placeholder="••••••••" required />
+              <label for="password1">Password</label>
+              <input type="password" id="password1" v-model="password1" placeholder="••••••••" required />
+              <p class="text-red-500" v-if="validationErrors.password1">{{ validationErrors.password1 }}</p>
             </div>
 
             <div class="form-group">
-              <label for="confirmPassword">Confirm Password</label>
-              <input type="password" id="confirmPassword" v-model="confirmPassword" placeholder="••••••••" required />
+              <label for="password2">Confirm Password</label>
+              <input type="password" id="password2" v-model="password2" placeholder="••••••••" required />
+              <p class="text-red-500" v-if="validationErrors.password2">{{ validationErrors.password2 }}</p>
             </div>
 
             <div class="terms-checkbox">
@@ -74,9 +78,11 @@
               </label>
             </div>
 
-            <button type="submit" class="btn btn-primary">Create Account</button>
+            <button type="submit" class="btn btn-primary" :disabled="isBusy">Create Account
+              <LoadingSpinner v-if="isBusy" />
+            </button>
           </form>
-
+          <p v-if="apiError" class="text-red-500 mt-2">{{ apiError }}</p>
           <div class="login-prompt">
             Already have an account?
             <NuxtLink to="/login" class="login-link">Sign in</NuxtLink>
@@ -88,34 +94,89 @@
 </template>
 
 <script setup lang="ts">
+import { z } from 'zod';
+import { signupFormValidator } from '~~/shared/validators/signup/signup-validator';
+const { signIn } = useAuth();
 const firstName = ref('')
 const lastName = ref('')
 const email = ref('')
 const dateOfBirth = ref('')
-const password = ref('')
-const confirmPassword = ref('')
+const password1 = ref('')
+const password2 = ref('')
 const agreeToTerms = ref(false)
 
-const handleSignup = () => {
-  if (password.value !== confirmPassword.value) {
-    alert('Passwords do not match')
-    return
-  }
+const apiError = ref<string | null>(null);
+const isBusy = ref(false);
+const validationErrors = ref({
+  firstName: null as string | null,
+  lastName: null as string | null,
+  email: null as string | null,
+  dateOfBirth: null as string | null,
+  password1: null as string | null,
+  password2: null as string | null,
+  agreeToTerms: null as string | null
+})
 
-  console.log('Signup with:', {
+const handleSignup = async () => {
+  resetValidationErrors();
+  apiError.value = null;
+  isBusy.value = true;
+  const requestBody = {
     firstName: firstName.value,
     lastName: lastName.value,
     email: email.value,
     dateOfBirth: dateOfBirth.value,
-    password: password.value,
-    agreeToTerms: agreeToTerms.value
+    password1: password1.value,
+    password2: password2.value,
+  }
+  try {
+    signupFormValidator.parse(requestBody);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      // Handle validation errors (e.g., display error messages to the user)
+      error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof typeof validationErrors.value
+        validationErrors.value[field] = issue.message
+      })
+      return
+    }
+  }
+
+  const result = await $fetch('/api/signup', {
+    method: 'POST',
+    body: requestBody
   })
+
+  if (!result.success) {
+    apiError.value = 'Signup failed. Please try again: ' + ('errors' in result && result.errors ? result.errors.map((e: any) => e).join(', ') : 'Unknown error')
+    isBusy.value = false
+    return
+  }
   // Add your signup logic here
+  await signIn("credentials", {
+    email: email.value,
+    password: password1.value,
+    redirect: true,
+    callbackUrl: '/dashboard'
+  })
+}
+
+function resetValidationErrors() {
+  validationErrors.value = {
+    firstName: null,
+    lastName: null,
+    email: null,
+    dateOfBirth: null,
+    password1: null,
+    password2: null,
+    agreeToTerms: null
+  }
 }
 </script>
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
 
 .signup-page {
   min-height: 100vh;
@@ -127,6 +188,17 @@ const handleSignup = () => {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.spinner {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top: 2px solid #ffffff;
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-left: 0.5rem;
 }
 
 .signup-container {

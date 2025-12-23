@@ -17,7 +17,9 @@
           Learn languages faster with AI-powered flashcards. Smart, adaptive, and designed for rapid progress.
         </p>
         <div class="cta-buttons">
-          <button class="btn btn-primary">Get Started Free</button>
+          <NuxtLink to="/login">
+            <button class="btn btn-primary">Get Started Free</button>
+          </NuxtLink>
           <button class="btn btn-secondary">Watch Demo</button>
         </div>
       </main>
