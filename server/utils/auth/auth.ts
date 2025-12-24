@@ -4,6 +4,11 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "~~/db";
 const runtimeConfig = useRuntimeConfig();
 
+console.log("AUTH_SECRET", runtimeConfig.nuxtAuth.secret);
+console.log("PROCESS.env AUTH_SECRET", process.env.AUTH_SECRET);
+
+console.log("AUTH_ORIGIN", runtimeConfig.auth?.baseURL);
+console.log("PROCESS.env AUTH_ORIGIN", process.env.AUTH_ORIGIN);
 export const authOptions: AuthOptions = {
   secret: runtimeConfig.nuxtAuth.secret,
   providers: [
