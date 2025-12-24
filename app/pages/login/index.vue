@@ -100,7 +100,6 @@ const apiError = ref<string | null>(null)
 
 const handleSignin = async () => {
   apiError.value = null;
-  // Add your login logic here
   const res = await signIn('credentials', {
     redirect: true,
     email: email.value,
@@ -114,6 +113,5 @@ const handleSignin = async () => {
 
     return;
   }
-  console.log('SignIn response:', res);
 }
 </script>
