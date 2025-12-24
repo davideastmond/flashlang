@@ -104,7 +104,7 @@ const handleSignin = async () => {
     redirect: true,
     email: email.value,
     password: password.value,
-    callbackUrl: '/dashboard'
+    callbackUrl: '/user/dashboard'
   });
 
   if (res?.error) {
