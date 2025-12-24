@@ -18,7 +18,7 @@ export const authOptions: AuthOptions = {
           where: (users, { eq }) => eq(users.email, credentials?.email ?? ""),
         });
         if (!queryUser) {
-          throw new Error("No user found with the provided email.");
+          throw new Error("We couldn't find a user with these credentials.");
         }
 
         const isPasswordValid = await bcrypt.compare(
@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
           queryUser.passwordHash
         );
         if (!isPasswordValid) {
-          throw new Error("Invalid password.");
+          throw new Error("Invalid e-mail or password.");
         }
         return queryUser;
       },
