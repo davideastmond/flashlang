@@ -63,10 +63,11 @@
             </div>
           </div>
           <div class="flex justify-end">
-            <!-- The butt -->
-            <button
-              class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
-              now</button>
+            <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySet.id)}/practice`">
+              <button
+                class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
+                now</button>
+            </NuxtLink>
           </div>
         </div>
 
@@ -229,10 +230,9 @@
 </template>
 
 <script setup lang="ts">
-import { createTranslator } from "short-uuid";
 import type { FlashCard } from "~~/shared/types/definitions/flash-card";
 import type { StudySet } from "~~/shared/types/definitions/study-set";
-
+import { getFullUuid } from "~~/shared/utils/uuid-convert";
 const route = useRoute();
 
 // This id is a shortened UUID. Before we use it to fetch data, we need to convert it back to full UUID using the short-uuid library
@@ -278,10 +278,8 @@ const fetchStudySet = async () => {
     loading.value = true;
     error.value = null;
 
-
-
     const response = await $fetch<{ success: boolean; data: StudySet & { flashCards: FlashCard[] } }>(
-      `/api/studysets/${getFullUuid()}`
+      `/api/studysets/${getFullUuid(studySetId)}`
     );
 
     if (response.success) {
@@ -316,7 +314,7 @@ const saveStudySetInfo = async () => {
     isSaving.value = true;
 
     const response = await $fetch<{ success: boolean; data: StudySet }>(
-      `/api/studysets/${getFullUuid()}`,
+      `/api/studysets/${getFullUuid(studySetId)}`,
       {
         method: "PATCH",
         body: {
@@ -345,11 +343,6 @@ const closeAddCardModal = () => {
   newCard.value = { question: "", answer: "" };
 };
 
-const getFullUuid = () => {
-  const translator = createTranslator();
-  return translator.toUUID(studySetId);
-};
-
 const addCard = async () => {
   if (!newCard.value.question.trim() || !newCard.value.answer.trim()) return;
 
@@ -357,7 +350,7 @@ const addCard = async () => {
     isAddingCard.value = true;
 
     const response = await $fetch<{ success: boolean; data: FlashCard }>(
-      `/api/studysets/${getFullUuid()}/cards`,
+      `/api/studysets/${getFullUuid(studySetId)}/cards`,
       {
         method: "POST",
         body: {
@@ -394,7 +387,7 @@ const confirmDelete = async () => {
     isDeleting.value = true;
 
     const response = await $fetch<{ success: boolean }>(
-      `/api/studysets/${getFullUuid()}/cards/${deleteConfirmCard.value}`,
+      `/api/studysets/${getFullUuid(studySetId)}/cards/${deleteConfirmCard.value}`,
       {
         method: "DELETE",
       }
