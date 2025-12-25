@@ -123,59 +123,16 @@ definePageMeta({
 const currentPage = ref(1);
 const itemsPerPage = 9; // 3x3 grid
 
-// Fetch study sets - Replace this with actual API call
-const { data: studySets, pending, error, refresh } = await useLazyAsyncData<StudySet[]>(
+// Fetch study sets from API
+const { data: studySetsResponse, pending, error, refresh } = await useLazyAsyncData<{ success: boolean; data: StudySet[] }>(
   'study-sets',
   async () => {
-    // TODO: Replace with actual API endpoint
-    // const response = await $fetch('/api/studysets');
-    // return response;
-
-    // Mock data for demonstration
-    return [
-      {
-        id: '1',
-        title: 'Spanish Vocabulary',
-        description: 'Essential Spanish words and phrases for beginners',
-        cardCount: 50,
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-15')
-      },
-      {
-        id: '2',
-        title: 'JavaScript Fundamentals',
-        description: 'Core JavaScript concepts including closures, promises, and async/await',
-        cardCount: 35,
-        createdAt: new Date('2024-02-10'),
-        updatedAt: new Date('2024-02-10')
-      },
-      {
-        id: '3',
-        title: 'World Capitals',
-        description: 'Learn the capital cities of countries around the world',
-        cardCount: 195,
-        createdAt: new Date('2024-03-05'),
-        updatedAt: new Date('2024-03-05')
-      },
-      {
-        id: '4',
-        title: 'French Grammar',
-        description: 'Important French grammar rules and conjugations',
-        cardCount: 42,
-        createdAt: new Date('2024-03-12'),
-        updatedAt: new Date('2024-03-12')
-      },
-      {
-        id: '5',
-        title: 'Biology Terms',
-        description: 'Key terminology for high school biology',
-        cardCount: 78,
-        createdAt: new Date('2024-03-18'),
-        updatedAt: new Date('2024-03-18')
-      },
-    ] as StudySet[];
+    const response = await $fetch<{ success: boolean; data: StudySet[] }>('/api/studysets');
+    return response;
   }
 );
+
+const studySets = computed(() => studySetsResponse.value?.data || []);
 
 // Computed properties for pagination
 const totalPages = computed(() => {

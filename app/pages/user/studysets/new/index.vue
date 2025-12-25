@@ -116,11 +116,7 @@
           </NuxtLink>
 
           <div class="flex gap-4">
-            <button type="button" @click="saveDraft"
-              class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium"
-              :disabled="isSubmitting">
-              Save Draft
-            </button>
+
             <button type="submit"
               class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
               :disabled="isSubmitting">
@@ -159,6 +155,7 @@
 </template>
 
 <script setup lang="ts">
+import { createTranslator } from "short-uuid";
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
 // Define types
@@ -190,7 +187,7 @@ const errorMessage = ref('');
 
 // Generate unique ID
 const generateId = () => {
-  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 };
 
 // Add a new flash card
@@ -253,9 +250,18 @@ const handleSubmit = async () => {
         flashCards: flashCards.value
       }
     });
-    console.log('API Response testing getServerSession:', response);
-    // Upon the successful creation, we should get the studyset ID back. We can then navigate to its view page where user can add more cards or study.
 
+    // Upon the successful creation, we should get the studyset ID back. We can then navigate to its view page where user can add more cards or study.
+    successMessage.value = 'Study set created successfully!';
+
+    // This returns a full uuid for the newly created study set
+
+    if (!response.data) {
+      throw new Error('No study set ID returned from API');
+    }
+    const translator = createTranslator();
+    const shortenedId = translator.fromUUID(response.data as string);
+    await navigateTo(`/user/studysets/${shortenedId}`);
   } catch (error) {
     console.error('Error creating study set:', error);
     errorMessage.value = 'Failed to create study set. Please try again.';
@@ -264,28 +270,7 @@ const handleSubmit = async () => {
   }
 };
 
-// Save as draft
-const saveDraft = async () => {
-  if (!studySet.value.title?.trim()) {
-    errors.value.title = 'Title is required to save draft';
-    return;
-  }
 
-  isSubmitting.value = true;
-  successMessage.value = '';
-  errorMessage.value = '';
-
-  try {
-    // TODO: Implement draft saving
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    successMessage.value = 'Draft saved successfully!';
-  } catch (error) {
-    console.error('Error saving draft:', error);
-    errorMessage.value = 'Failed to save draft. Please try again.';
-  } finally {
-    isSubmitting.value = false;
-  }
-};
 
 // Add initial card on mount
 onMounted(() => {
