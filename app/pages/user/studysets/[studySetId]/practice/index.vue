@@ -9,7 +9,7 @@
     <div v-else-if="error" class="flex items-center justify-center min-h-screen">
       <div class="bg-red-500/10 border border-red-500 rounded-lg p-6 max-w-md">
         <p class="text-red-400">{{ error }}</p>
-        <NuxtLink :to="`/user/studysets/${studySetId}`"
+        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
           class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 transition-colors">
           ← Back to Study Set
         </NuxtLink>
@@ -20,7 +20,7 @@
     <div v-else-if="studySet && flashCards.length > 0" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Header -->
       <div class="mb-8">
-        <NuxtLink :to="`/user/studysets/${studySetId}`"
+        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
           class="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -40,16 +40,14 @@
       <!-- Flashcard -->
       <div class="mb-8">
         <div class="perspective-1000">
-          <div
-            class="relative w-full h-96 cursor-pointer transition-transform duration-500 transform-style-3d"
-            :class="{ 'rotate-y-180': isFlipped }"
-            @click="flipCard">
+          <div class="relative w-full h-96 cursor-pointer transition-transform duration-500 transform-style-3d"
+            :class="{ 'rotate-y-180': isFlipped }" @click="flipCard">
             <!-- Front of card (Question) -->
             <div
               class="absolute w-full h-full backface-hidden bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-700 flex items-center justify-center p-8">
               <div class="text-center">
                 <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-4 block">Question</span>
-                <p class="text-2xl text-white font-medium">{{ currentCard.question }}</p>
+                <p class="text-2xl text-white font-medium">{{ currentCard?.question }}</p>
                 <p class="text-sm text-gray-400 mt-6">Click to reveal answer</p>
               </div>
             </div>
@@ -58,7 +56,7 @@
               class="absolute w-full h-full backface-hidden bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-700 flex items-center justify-center p-8 rotate-y-180">
               <div class="text-center">
                 <span class="text-xs font-semibold text-green-400 uppercase tracking-wide mb-4 block">Answer</span>
-                <p class="text-2xl text-white font-medium">{{ currentCard.answer }}</p>
+                <p class="text-2xl text-white font-medium">{{ currentCard?.answer }}</p>
               </div>
             </div>
           </div>
@@ -108,7 +106,7 @@
         </svg>
         <h3 class="text-xl font-semibold text-gray-400 mb-2">No flash cards to practice</h3>
         <p class="text-gray-500 mb-6">Add some cards to this study set to start practicing</p>
-        <NuxtLink :to="`/user/studysets/${studySetId}`"
+        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
           class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium inline-block">
           Go to Study Set
         </NuxtLink>
@@ -118,7 +116,7 @@
 </template>
 
 <script setup lang="ts">
-import { createTranslator } from "short-uuid";
+
 import type { FlashCard } from "~~/shared/types/definitions/flash-card";
 import type { StudySet } from "~~/shared/types/definitions/study-set";
 
@@ -148,11 +146,10 @@ const fetchStudySet = async () => {
     loading.value = true;
     error.value = null;
 
-    const translator = createTranslator();
-    const fullUuid = translator.toUUID(studySetId);
+
 
     const response = await $fetch<{ success: boolean; data: StudySet & { flashCards: FlashCard[] } }>(
-      `/api/studysets/${fullUuid}`
+      `/api/studysets/${studySetId}`
     );
 
     if (response.success) {
