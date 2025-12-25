@@ -9,7 +9,7 @@
     <div v-else-if="error" class="flex items-center justify-center min-h-screen">
       <div class="bg-red-500/10 border border-red-500 rounded-lg p-6 max-w-md">
         <p class="text-red-400">{{ error }}</p>
-        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
+        <NuxtLink :to="`/user/studysets/${studySetId}`"
           class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 transition-colors">
           ← Back to Study Set
         </NuxtLink>
@@ -20,7 +20,7 @@
     <div v-else-if="studySet && flashCards.length > 0" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Header -->
       <div class="mb-8">
-        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
+        <NuxtLink :to="`/user/studysets/${studySetId}`"
           class="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-4">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -106,7 +106,7 @@
         </svg>
         <h3 class="text-xl font-semibold text-gray-400 mb-2">No flash cards to practice</h3>
         <p class="text-gray-500 mb-6">Add some cards to this study set to start practicing</p>
-        <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySetId)}`"
+        <NuxtLink :to="`/user/studysets/${studySetId}`"
           class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium inline-block">
           Go to Study Set
         </NuxtLink>
@@ -146,10 +146,8 @@ const fetchStudySet = async () => {
     loading.value = true;
     error.value = null;
 
-
-
     const response = await $fetch<{ success: boolean; data: StudySet & { flashCards: FlashCard[] } }>(
-      `/api/studysets/${studySetId}`
+      `/api/studysets/${getFullUuid(studySetId)}`
     );
 
     if (response.success) {
