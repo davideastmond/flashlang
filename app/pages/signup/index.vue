@@ -179,23 +179,25 @@ const handleSignup = async () => {
     }
   }
 
-  const result = await $fetch('/api/signup', {
-    method: 'POST',
-    body: requestBody
-  })
-
-  if (!result.success) {
-    apiError.value = 'Signup failed. Please try again: ' + ('errors' in result && result.errors ? result.errors.map((e: any) => e).join(', ') : 'Unknown error')
-    isBusy.value = false
-    return
+  try {
+    await $fetch('/api/signup', {
+      method: 'POST',
+      body: requestBody
+    })
+    // Add your signup logic here
+    await signIn("credentials", {
+      email: email.value,
+      password: password1.value,
+      redirect: true,
+      callbackUrl: '/user/dashboard'
+    })
+  } catch (error) {
+    console.error("Signup API error:", error);
+    apiError.value = "Signup failed. Please try again"
   }
-  // Add your signup logic here
-  await signIn("credentials", {
-    email: email.value,
-    password: password1.value,
-    redirect: true,
-    callbackUrl: '/user/dashboard'
-  })
+  finally {
+    isBusy.value = false;
+  }
 }
 
 function resetValidationErrors() {

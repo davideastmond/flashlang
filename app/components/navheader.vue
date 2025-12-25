@@ -23,7 +23,7 @@
           <NuxtLink to="/user/studysets/view" class="text-gray-300 hover:text-white transition-colors font-medium">
             Study Sets
           </NuxtLink>
-          <NuxtLink to="/user/studysets/create" class="text-gray-300 hover:text-white transition-colors font-medium">
+          <NuxtLink to="/user/studysets/new" class="text-gray-300 hover:text-white transition-colors font-medium">
             Create Set
           </NuxtLink>
           <NuxtLink to="/user/flashcards" class="text-gray-300 hover:text-white transition-colors font-medium">
@@ -88,7 +88,7 @@
               </svg>
               Study Sets
             </NuxtLink>
-            <NuxtLink to="/user/studysets/create" @click="closeMenu"
+            <NuxtLink to="/user/studysets/new" @click="closeMenu"
               class="flex items-center px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
