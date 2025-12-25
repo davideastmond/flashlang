@@ -155,7 +155,6 @@
 </template>
 
 <script setup lang="ts">
-import { createTranslator } from "short-uuid";
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
 // Define types
@@ -259,9 +258,8 @@ const handleSubmit = async () => {
     if (!response.data) {
       throw new Error('No study set ID returned from API');
     }
-    const translator = createTranslator();
-    const shortenedId = translator.fromUUID(response.data as string);
-    await navigateTo(`/user/studysets/${shortenedId}`);
+
+    await navigateTo(`/user/studysets/${getFullUuid(response.data as string)}`);
   } catch (error) {
     console.error('Error creating study set:', error);
     errorMessage.value = 'Failed to create study set. Please try again.';
