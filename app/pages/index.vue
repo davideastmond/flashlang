@@ -17,8 +17,11 @@
           Learn languages faster with AI-powered flashcards. Smart, adaptive, and designed for rapid progress.
         </p>
         <div class="cta-buttons">
-          <NuxtLink to="/login">
+          <NuxtLink v-if="status !== 'authenticated'" to="/login">
             <button class="btn btn-primary">Get Started Free</button>
+          </NuxtLink>
+          <NuxtLink v-else to="/user/dashboard">
+            <button class="btn btn-primary">Go to Dashboard</button>
           </NuxtLink>
           <button class="btn btn-secondary">Watch Demo</button>
         </div>
@@ -44,7 +47,9 @@
     </div>
   </div>
 </template>
-
+<script setup lang="ts">
+const { status } = useAuth();
+</script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 

@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { z } from "zod";
 import { db } from "~~/db";
 import { users } from "~~/db/schema";
-import type { SignupData } from "~~/shared/types/signup/definitions";
+import type { SignupData } from "~~/shared/types/api/signup/definitions";
 import { signupValidator } from "~~/shared/validators/signup/signup-validator";
 export default defineEventHandler(async (event) => {
   /* Register new user*/
@@ -13,7 +13,11 @@ export default defineEventHandler(async (event) => {
     signupValidator.parse(requestBody);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, errors: error.issues };
+      return createError({
+        status: 400,
+        message: "Validation error",
+        data: error.issues,
+      });
     }
   }
 
@@ -23,13 +27,16 @@ export default defineEventHandler(async (event) => {
       where: (users, { eq }) => eq(users.email, requestBody.email),
     });
     if (existingUser) {
-      return {
-        success: false,
-        errors: ["A user with this email already exists."],
-      };
+      return createError({
+        status: 400,
+        message: "A user with this email already exists.",
+      });
     }
   } catch (error) {
-    return { success: false, errors: ["Database error occurred."] };
+    return createError({
+      status: 500,
+      message: "Database error occurred.",
+    });
   }
 
   try {
@@ -42,7 +49,10 @@ export default defineEventHandler(async (event) => {
     });
     return { success: true };
   } catch (error) {
-    console.log("Error creating user:", error);
-    return { success: false, errors: ["Failed to create user."] };
+    console.error("Error creating user:", error);
+    return createError({
+      status: 500,
+      message: "Failed to create user.",
+    });
   }
 });
