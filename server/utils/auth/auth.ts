@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { AuthOptions } from "next-auth";
+import { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { db } from "~~/db";
 const runtimeConfig = useRuntimeConfig();
@@ -32,7 +32,35 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      if (user) {
+        token = {
+          ...token,
+          id: user?.id,
+          email: user?.email,
+          name: user?.name,
+        };
+      }
+
+      return token;
+    },
+    session: async ({ session, token }) => {
+      session = {
+        ...session,
+        user: {
+          id: token.id as string,
+          email: token.email as string,
+          name: token.name as string,
+        } as Session["user"],
+      };
+      return session;
+    },
+  },
   pages: {
     signIn: "/login",
+  },
+  session: {
+    strategy: "jwt",
   },
 };
