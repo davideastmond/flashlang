@@ -45,7 +45,7 @@
             </button>
           </div>
 
-          <!-- //TODO: Add a practice now button in this section -->
+
           <div class="flex items-center space-x-6 text-sm text-gray-400">
             <div class="flex items-center">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -61,6 +61,12 @@
               </svg>
               <span>Created {{ formatDate(studySet.createdAt) }}</span>
             </div>
+          </div>
+          <div class="flex justify-end">
+            <!-- The butt -->
+            <button
+              class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
+              now</button>
           </div>
         </div>
 
@@ -93,7 +99,16 @@
 
       <!-- Actions Bar -->
       <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white">Flash Cards</h2>
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-3">Flash Cards</h2>
+          <label class="flex items-center cursor-pointer group">
+            <input type="checkbox" v-model="blurAnswers"
+              class="w-5 h-5 rounded border-gray-600 bg-gray-700 text-indigo-600 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer" />
+            <span class="ml-3 text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+              Blur answers (study mode)
+            </span>
+          </label>
+        </div>
         <button @click="showAddCardModal = true"
           class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium shadow-lg">
           <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,7 +152,9 @@
 
             <div class="border-t border-gray-700 pt-4">
               <span class="text-xs font-semibold text-green-400 uppercase tracking-wide mb-2 block">Answer</span>
-              <p class="text-gray-300">{{ card.answer }}</p>
+              <p class="text-gray-300 transition-all duration-200" :class="{ 'blur-md select-none': blurAnswers }">
+                {{ card.answer }}
+              </p>
             </div>
           </div>
         </div>
@@ -252,17 +269,19 @@ const newCard = ref({
 const deleteConfirmCard = ref<string | null>(null);
 const isDeleting = ref(false);
 
+// Blur answers toggle
+const blurAnswers = ref(false);
+
 // Fetch study set data
 const fetchStudySet = async () => {
   try {
     loading.value = true;
     error.value = null;
 
-    const translator = createTranslator();
-    const fullUuid = translator.toUUID(studySetId);
+
 
     const response = await $fetch<{ success: boolean; data: StudySet & { flashCards: FlashCard[] } }>(
-      `/api/studysets/${fullUuid}`
+      `/api/studysets/${getFullUuid()}`
     );
 
     if (response.success) {
@@ -297,7 +316,7 @@ const saveStudySetInfo = async () => {
     isSaving.value = true;
 
     const response = await $fetch<{ success: boolean; data: StudySet }>(
-      `/api/studysets/${studySetId}`,
+      `/api/studysets/${getFullUuid()}`,
       {
         method: "PATCH",
         body: {
@@ -326,6 +345,11 @@ const closeAddCardModal = () => {
   newCard.value = { question: "", answer: "" };
 };
 
+const getFullUuid = () => {
+  const translator = createTranslator();
+  return translator.toUUID(studySetId);
+};
+
 const addCard = async () => {
   if (!newCard.value.question.trim() || !newCard.value.answer.trim()) return;
 
@@ -333,7 +357,7 @@ const addCard = async () => {
     isAddingCard.value = true;
 
     const response = await $fetch<{ success: boolean; data: FlashCard }>(
-      `/api/studysets/${studySetId}/cards`,
+      `/api/studysets/${getFullUuid()}/cards`,
       {
         method: "POST",
         body: {
@@ -370,7 +394,7 @@ const confirmDelete = async () => {
     isDeleting.value = true;
 
     const response = await $fetch<{ success: boolean }>(
-      `/api/studysets/${studySetId}/cards/${deleteConfirmCard.value}`,
+      `/api/studysets/${getFullUuid()}/cards/${deleteConfirmCard.value}`,
       {
         method: "DELETE",
       }
