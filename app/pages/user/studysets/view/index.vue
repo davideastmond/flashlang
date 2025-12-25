@@ -42,7 +42,8 @@
         <!-- Study Sets Grid -->
         <div v-else>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            <NuxtLink v-for="studySet in paginatedStudySets" :key="studySet.id" :to="`/studysets/${studySet.id}`"
+            <NuxtLink v-for="studySet in paginatedStudySets" :key="studySet.id"
+              :to="`/user/studysets/${toShortenedUuid(studySet.id)}`"
               class="group bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-200 cursor-pointer">
               <!-- Card Header -->
               <div class="flex justify-between items-start mb-4">
@@ -112,6 +113,8 @@
 <script setup lang="ts">
 // Define types for study sets
 import type { StudySet } from '~~/shared/types/definitions/study-set';
+import { toShortenedUuid } from '~~/shared/utils/uuid-convert';
+
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
