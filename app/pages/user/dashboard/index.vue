@@ -1,44 +1,46 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
-    <Header :displayText="data?.user?.email || 'Unknown User'" />
-
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Quick Actions -->
       <div class="mb-8">
         <h2 class="text-xl font-semibold text-white mb-4">Quick Actions</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <!-- Create New Session Card -->
-          <div @click="handleCreateSession"
+          <!-- Create New Study Set Card -->
+          <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-indigo-500">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <svg class="h-12 w-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
+            <NuxtLink to="/user/studysets/new">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-12 w-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-lg font-medium text-white">Create New Study Set</h3>
+                  <p class="text-sm text-gray-400">Create a new study and new flashcards</p>
+                </div>
               </div>
-              <div class="ml-4">
-                <h3 class="text-lg font-medium text-white">Create New Session</h3>
-                <p class="text-sm text-gray-400">Start a new flashcard learning session</p>
-              </div>
-            </div>
+            </NuxtLink>
           </div>
 
           <!-- Browse Sessions Card -->
-          <div @click="handleBrowseSessions"
+          <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-green-500">
-            <div class="flex items-center">
-              <div class="flex-shrink-0">
-                <svg class="h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+            <NuxtLink to="/user/studysets/view">
+              <div class="flex items-center">
+                <div class="flex-shrink-0">
+                  <svg class="h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                </div>
+                <div class="ml-4">
+                  <h3 class="text-lg font-medium text-white">Browse Study Sets</h3>
+                  <p class="text-sm text-gray-400">View all your study sets</p>
+                </div>
               </div>
-              <div class="ml-4">
-                <h3 class="text-lg font-medium text-white">Browse Sessions</h3>
-                <p class="text-sm text-gray-400">View all your flashcard sessions</p>
-              </div>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
@@ -185,14 +187,11 @@
 <script setup lang="ts">
 
 definePageMeta({
-  title: 'Dashboard - FlashLang',
-  description: 'Your personalized dashboard for FlashLang',
   auth: true,
-  middleware: ['sidebase-auth']
+  middleware: ['sidebase-auth'],
+  layout: 'headerbar'
 });
-// User info
 
-const { data } = useAuth()
 // Stats
 const stats = ref({
   totalSessions: 0,
@@ -276,18 +275,6 @@ async function fetchRecentSessions() {
   }
 }
 
-// Handle sign out
-async function handleSignOut() {
-  try {
-    // TODO: Implement sign out logic
-    // await signOut({ callbackUrl: '/login' });
-    console.log('Signing out...');
-    navigateTo('/login');
-  } catch (error) {
-    console.error('Error signing out:', error);
-  }
-}
-
 // Handle create session
 function handleCreateSession() {
   // TODO: Navigate to create session page
@@ -295,12 +282,6 @@ function handleCreateSession() {
   // navigateTo('/sessions/create');
 }
 
-// Handle browse sessions
-function handleBrowseSessions() {
-  // TODO: Navigate to browse sessions page
-  console.log('Browse sessions');
-  // navigateTo('/sessions');
-}
 
 // Handle open session
 function handleOpenSession(sessionId: string) {

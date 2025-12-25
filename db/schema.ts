@@ -33,3 +33,41 @@ export const flashCards = pgTable("flash_cards", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
+
+// FlashCards belong to study sets
+export const studySets = pgTable("study_sets", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  description: text("description"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Many-to-many relationship between studySets and flashCards
+export const studySetFlashCards = pgTable("study_set_flash_cards", {
+  studySetId: text("study_set_id")
+    .notNull()
+    .references(() => studySets.id, { onDelete: "cascade" }),
+  flashCardId: text("flash_card_id")
+    .notNull()
+    .references(() => flashCards.id, { onDelete: "cascade" }),
+});
+
+/* 
+A study session is a round of going throw a studySet. We
+// TODO track number of correct answers, total questions, etc.
+*/
+export const studySessions = pgTable("study_sessions", {
+  id: text("id").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  studySetId: text("study_set_id")
+    .notNull()
+    .references(() => studySets.id, { onDelete: "cascade" }),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  endedAt: timestamp("ended_at"),
+});
