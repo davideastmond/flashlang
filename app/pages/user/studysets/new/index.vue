@@ -259,7 +259,7 @@ const handleSubmit = async () => {
       throw new Error('No study set ID returned from API');
     }
 
-    await navigateTo(`/user/studysets/${getFullUuid(response.data as string)}`);
+    await navigateTo(`/user/studysets/${toShortenedUuid(response.data as string)}`);
   } catch (error) {
     console.error('Error creating study set:', error);
     errorMessage.value = 'Failed to create study set. Please try again.';
