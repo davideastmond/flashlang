@@ -17,7 +17,7 @@ Users can also use AI to generate decks based on specific topics or themes.
 
 ## Technologies Used
 
-- Nuxt 4, Vue 3 and Vite
+- Nuxt4, Vue3
 - Tailwind CSS
 - NeonDB, Postgres
 - Drizzle ORM
