@@ -52,6 +52,20 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
+                <p class="text-sm font-medium text-gray-400">Total StudySets</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySets }}</p>
+              </div>
+              <div class="p-3 bg-blue-500/20 rounded-full">
+                <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
+            <div class="flex items-center justify-between">
+              <div>
                 <p class="text-sm font-medium text-gray-400">Total Sessions</p>
                 <p class="text-2xl font-bold text-white mt-1">{{ stats.totalSessions }}</p>
               </div>
@@ -67,7 +81,7 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-400">Total Cards</p>
+                <p class="text-sm font-medium text-gray-400">Flash Cards</p>
                 <p class="text-2xl font-bold text-white mt-1">{{ stats.totalCards }}</p>
               </div>
               <div class="p-3 bg-green-500/20 rounded-full">
@@ -194,6 +208,7 @@ definePageMeta({
 
 // Stats
 const stats = ref({
+  totalStudySets: 0,
   totalSessions: 0,
   totalCards: 0,
   studyStreak: 0,
@@ -223,13 +238,11 @@ async function fetchUserData() {
     // const { data } = await useFetch('/api/user/profile');
     // userName.value = data.value?.name || 'User';
 
+    const { data } = await $fetch('/api/user/profile/stats');
 
     // TODO: Fetch actual stats
     stats.value = {
-      totalSessions: 12,
-      totalCards: 156,
-      studyStreak: 7,
-      accuracy: 85,
+      ...data
     };
   } catch (error) {
     console.error('Error fetching user data:', error);

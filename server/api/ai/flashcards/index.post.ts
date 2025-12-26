@@ -6,9 +6,10 @@ import { AIGenerateFlashcardsPostRequestBody } from "~~/shared/types/api/ai-gene
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<AIGenerateFlashcardsPostRequestBody>(event);
-  const { topic, flashCardCount = 5 } = body;
+  const { topic, language = "en-US", flashCardCount = 5 } = body;
 
-  const prompt = `Generate a set of ${flashCardCount} flashcards on the topic of ${topic}. 
+  const prompt = `Generate a set of ${flashCardCount} flashcards on the topic of ${topic} using the language ${language}.
+    If the language is not en-US, the responses to the questions should be in the specified language.
     Each flashcard object should have a question and an answer. Format the response and return it as an array of objects with "question" and "answer" fields. 
     Example output would be '[{"question": "homme", "answer": "man"}, {"question": "to be", "answer": "être"}, {"question": "cat", "answer": "chat"}]'. 
     Return pure JSON and remove new lines as the response should be able to be parsed with JSON.parse(). 
