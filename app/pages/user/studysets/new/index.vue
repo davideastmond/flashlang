@@ -337,14 +337,11 @@ const handleSubmit = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await $fetch('/api/studysets', {
-      method: 'POST',
-      body: {
-        title: studySet.value.title,
-        description: studySet.value.description,
-        flashCards: flashCards.value
-      }
-    });
+    const response = await createNewStudySet(
+      studySet.value.title as string,
+      studySet.value.description as string,
+      flashCards.value
+    );
 
     /* Upon the successful creation, we should get the studyset ID back. 
     We can then navigate to its view page where user can add more cards or study. */
@@ -421,25 +418,34 @@ const handleAiGenerate = async () => {
 
     studySet.value.title = aiForm.value.title;
     studySet.value.description = aiForm.value.description;
-
     try {
-      const aiResponse = await $fetch('/api/studysets', {
-        method: 'POST',
-        body: {
-          title: studySet.value.title,
-          description: studySet.value.description,
-          flashCards: parsedFlashCardData
-        }
-      });
+      const aiResponse = await createNewStudySet(studySet.value.title as string, studySet.value.description as string, parsedFlashCardData as unknown as FlashCard[]);
       closeAiModal();
       successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
       await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
-
     } catch (error) {
       console.error('Error creating study set from AI generated flashcards:', error);
-      errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try again.';
+      errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try    again.';
       return;
     }
+    // try {
+    //   const aiResponse = await $fetch('/api/studysets', {
+    //     method: 'POST',
+    //     body: {
+    //       title: studySet.value.title,
+    //       description: studySet.value.description,
+    //       flashCards: parsedFlashCardData
+    //     }
+    //   });
+    //   closeAiModal();
+    //   successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
+    //   await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
+
+    // } catch (error) {
+    //   console.error('Error creating study set from AI generated flashcards:', error);
+    //   errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try again.';
+    //   return;
+    // }
   } catch (error) {
     console.error('Error generating flashcards:', error);
     errorMessage.value = 'Failed to generate flashcards with AI. Please try again.';
@@ -448,7 +454,16 @@ const handleAiGenerate = async () => {
   }
 };
 
-
+async function createNewStudySet(title: string, description: string, cards: FlashCard[]) {
+  return await $fetch('/api/studysets', {
+    method: 'POST',
+    body: {
+      title: studySet.value.title,
+      description: studySet.value.description,
+      flashCards: cards
+    }
+  });
+}
 
 // Add initial card on mount
 onMounted(() => {
