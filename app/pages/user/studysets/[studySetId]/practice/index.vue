@@ -165,15 +165,31 @@ const fetchStudySet = async () => {
 // Card navigation
 const nextCard = () => {
   if (currentIndex.value < flashCards.value.length - 1) {
-    currentIndex.value++;
-    isFlipped.value = false;
+    if (isFlipped.value) {
+      // If card is flipped, flip back first and wait for animation
+      isFlipped.value = false;
+      setTimeout(() => {
+        currentIndex.value++;
+      }, 500); // Match the CSS transition duration
+    } else {
+      // Card is already showing question, just move to next
+      currentIndex.value++;
+    }
   }
 };
 
 const previousCard = () => {
   if (currentIndex.value > 0) {
-    currentIndex.value--;
-    isFlipped.value = false;
+    if (isFlipped.value) {
+      // If card is flipped, flip back first and wait for animation
+      isFlipped.value = false;
+      setTimeout(() => {
+        currentIndex.value--;
+      }, 500); // Match the CSS transition duration
+    } else {
+      // Card is already showing question, just move to previous
+      currentIndex.value--;
+    }
   }
 };
 
