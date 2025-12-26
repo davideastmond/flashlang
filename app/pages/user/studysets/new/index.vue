@@ -32,6 +32,21 @@
               placeholder="Describe what this study set covers..."
               class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"></textarea>
           </div>
+
+          <!-- Language Select -->
+          <div>
+            <label for="language" class="block text-sm font-medium text-gray-300 mb-2">
+              Language <span class="text-red-400">*</span>
+            </label>
+            <select id="language" v-model="studySet.language" required
+              class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors">
+              <option value="" disabled>Select a language</option>
+              <option v-for="lang in SUPPORTED_LANGUAGES" :key="lang.code" :value="lang.code">
+                {{ lang.name }}
+              </option>
+            </select>
+            <p v-if="errors.language" class="mt-2 text-sm text-red-400">{{ errors.language }}</p>
+          </div>
         </div>
 
         <!-- Flash Cards Section -->
@@ -204,6 +219,21 @@
               <p v-if="aiErrors.description" class="mt-2 text-sm text-red-400">{{ aiErrors.description }}</p>
             </div>
 
+            <!-- Language Select -->
+            <div>
+              <label for="ai-language" class="block text-sm font-medium text-gray-300 mb-2">
+                Language <span class="text-red-400">*</span>
+              </label>
+              <select id="ai-language" v-model="aiForm.language"
+                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                :class="{ 'border-red-500': aiErrors.language }">
+                <option value="" disabled>Select a language</option>
+                <option v-for="lang in SUPPORTED_LANGUAGES" :key="lang.code" :value="lang.code">
+                  {{ lang.name }}
+                </option>
+              </select>
+              <p v-if="aiErrors.language" class="mt-2 text-sm text-red-400">{{ aiErrors.language }}</p>
+            </div>
             <!-- Number of Flashcards Dropdown -->
             <div>
               <label for="ai-count" class="block text-sm font-medium text-gray-300 mb-2">
@@ -238,17 +268,20 @@
       </div>
     </Teleport>
   </div>
+
 </template>
 
 <script setup lang="ts">
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
+import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
 // Define types
 
 
 interface Errors {
   title?: string;
   flashCards?: string;
+  language?: string;
 }
 
 // Page metadata
@@ -261,7 +294,8 @@ definePageMeta({
 // Reactive state
 const studySet = ref<Partial<StudySet>>({
   title: '',
-  description: ''
+  description: '',
+  language: ''
 });
 
 const flashCards = ref<FlashCard[]>([]);
@@ -276,9 +310,10 @@ const isGenerating = ref(false);
 const aiForm = ref({
   title: '',
   description: '',
-  count: 10
+  count: 10,
+  language: ''
 });
-const aiErrors = ref<{ title?: string; description?: string }>({});
+const aiErrors = ref<{ title?: string; description?: string; language?: string }>({});
 
 // Generate unique ID
 const generateId = () => {
@@ -305,6 +340,11 @@ const validateForm = (): boolean => {
 
   if (!studySet.value.title?.trim()) {
     errors.value.title = 'Title is required';
+    return false;
+  }
+
+  if (!studySet.value.language?.trim()) {
+    errors.value.language = 'Language is required';
     return false;
   }
 
@@ -340,7 +380,8 @@ const handleSubmit = async () => {
     const response = await createNewStudySet(
       studySet.value.title as string,
       studySet.value.description as string,
-      flashCards.value
+      flashCards.value,
+      studySet.value.language
     );
 
     /* Upon the successful creation, we should get the studyset ID back. 
@@ -379,7 +420,11 @@ const validateAiForm = (): boolean => {
     aiErrors.value.description = 'Description is required';
   }
 
-  return !aiErrors.value.title && !aiErrors.value.description;
+  if (!aiForm.value.language?.trim()) {
+    aiErrors.value.language = 'Language is required';
+  }
+
+  return !aiErrors.value.title && !aiErrors.value.description && !aiErrors.value.language;
 };
 
 // Handle AI generation
@@ -396,6 +441,7 @@ const handleAiGenerate = async () => {
     const response = await $fetch('/api/ai/flashcards', {
       method: 'POST',
       body: {
+        language: aiForm.value.language,
         topic: `${aiForm.value.title} - ${aiForm.value.description}`,
         flashCardCount: aiForm.value.count
       }
@@ -419,7 +465,12 @@ const handleAiGenerate = async () => {
     studySet.value.title = aiForm.value.title;
     studySet.value.description = aiForm.value.description;
     try {
-      const aiResponse = await createNewStudySet(studySet.value.title as string, studySet.value.description as string, parsedFlashCardData as unknown as FlashCard[]);
+      const aiResponse = await createNewStudySet(
+        studySet.value.title as string,
+        studySet.value.description as string,
+        parsedFlashCardData as unknown as FlashCard[],
+        aiForm.value.language
+      );
       closeAiModal();
       successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
       await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
@@ -436,13 +487,14 @@ const handleAiGenerate = async () => {
   }
 };
 
-async function createNewStudySet(title: string, description: string, cards: FlashCard[]) {
-  return await $fetch('/api/studysets', {
+async function createNewStudySet(title: string, description: string, cards: FlashCard[], language?: string) {
+  return $fetch('/api/studysets', {
     method: 'POST',
     body: {
-      title: studySet.value.title,
-      description: studySet.value.description,
-      flashCards: cards
+      title,
+      description,
+      flashCards: cards,
+      language: language || studySet.value.language
     }
   });
 }
