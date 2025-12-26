@@ -15,6 +15,13 @@
       "when": 1766609146134,
       "tag": "0001_tough_donald_blake",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1766779654384,
+      "tag": "0002_lovely_warstar",
+      "breakpoints": true
     }
   ]
 }
