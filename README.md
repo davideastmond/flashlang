@@ -17,13 +17,14 @@ Users can also use AI to generate decks based on specific topics or themes.
 
 ## Technologies Used
 
-- Nuxt4, Vue 3 and Vite
+- Nuxt 4, Vue 3 and Vite
 - Tailwind CSS
 - NeonDB, Postgres
 - Drizzle ORM
 - Gemini-Flash API
 - @sidebase/nuxt-auth
 - Vercel for deployment
+- Nuxt Test Utils and Vitest for testing
 
 ## Requirements
 
@@ -69,6 +70,13 @@ Start the development server on `http://localhost:3000`:
 ```bash
 # npm
 npm run dev
+```
+
+## Tests
+
+```bash
+# npm
+npm run test
 ```
 
 ## Screenshots
