@@ -269,8 +269,8 @@ const newCard = ref({
 const deleteConfirmCard = ref<string | null>(null);
 const isDeleting = ref(false);
 
-// Blur answers toggle
-const blurAnswers = ref(false);
+// Blur answers toggle - it's enabled by default on render
+const blurAnswers = ref(true);
 
 // Fetch study set data
 const fetchStudySet = async () => {

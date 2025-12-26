@@ -42,6 +42,7 @@ export const studySets = pgTable("study_sets", {
     .references(() => users.id, { onDelete: "cascade" }),
   title: text("title").notNull(),
   description: text("description"),
+  language: text("language_code").notNull().default("en-US"), // use the IETF language tag format
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

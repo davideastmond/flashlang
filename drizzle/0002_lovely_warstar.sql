@@ -1,0 +1,1 @@
+ALTER TABLE "study_sets" ADD COLUMN "language_code" text DEFAULT 'en-US' NOT NULL;

@@ -36,10 +36,9 @@ export default defineEventHandler(async (event) => {
       userId: serverSession.user.id as string,
       title: requestBody.title,
       description: requestBody.description,
+      language: requestBody.language || "en-US",
     })
     .returning();
-
-  console.log("createdStudySet ID:", newStudySet[0].id);
 
   // Insert flashcards and link them to the study set
   for await (const card of requestBody.flashCards) {
