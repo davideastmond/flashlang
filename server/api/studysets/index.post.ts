@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
       userId: serverSession.user.id as string,
       title: requestBody.title,
       description: requestBody.description,
+      language: requestBody.language || "en-US",
     })
     .returning();
 
