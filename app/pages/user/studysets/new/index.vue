@@ -428,24 +428,6 @@ const handleAiGenerate = async () => {
       errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try    again.';
       return;
     }
-    // try {
-    //   const aiResponse = await $fetch('/api/studysets', {
-    //     method: 'POST',
-    //     body: {
-    //       title: studySet.value.title,
-    //       description: studySet.value.description,
-    //       flashCards: parsedFlashCardData
-    //     }
-    //   });
-    //   closeAiModal();
-    //   successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
-    //   await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
-
-    // } catch (error) {
-    //   console.error('Error creating study set from AI generated flashcards:', error);
-    //   errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try again.';
-    //   return;
-    // }
   } catch (error) {
     console.error('Error generating flashcards:', error);
     errorMessage.value = 'Failed to generate flashcards with AI. Please try again.';
