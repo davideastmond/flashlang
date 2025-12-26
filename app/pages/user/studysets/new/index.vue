@@ -116,6 +116,14 @@
           </NuxtLink>
 
           <div class="flex gap-4">
+            <button type="button" @click="showAiModal = true"
+              class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span>Create with AI</span>
+            </button>
 
             <button type="submit"
               class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -151,6 +159,84 @@
         </div>
       </div>
     </div>
+
+    <!-- AI Generation Modal -->
+    <Teleport to="body">
+      <div v-if="showAiModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75"
+        @click.self="closeAiModal">
+        <div class="bg-gray-800 border border-gray-700 rounded-lg max-w-md w-full p-6 shadow-2xl">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-2xl font-bold text-white flex items-center space-x-2">
+              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span>Create with AI</span>
+            </h3>
+            <button @click="closeAiModal" class="text-gray-400 hover:text-white transition-colors">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          <form @submit.prevent="handleAiGenerate" class="space-y-4">
+            <!-- Title Input -->
+            <div>
+              <label for="ai-title" class="block text-sm font-medium text-gray-300 mb-2">
+                Title <span class="text-red-400">*</span>
+              </label>
+              <input id="ai-title" v-model="aiForm.title" type="text" placeholder="e.g., Spanish Vocabulary - Level 1"
+                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                :class="{ 'border-red-500': aiErrors.title }" />
+              <p v-if="aiErrors.title" class="mt-2 text-sm text-red-400">{{ aiErrors.title }}</p>
+            </div>
+
+            <!-- Description Input -->
+            <div>
+              <label for="ai-description" class="block text-sm font-medium text-gray-300 mb-2">
+                Description <span class="text-red-400">*</span>
+              </label>
+              <textarea id="ai-description" v-model="aiForm.description" rows="4"
+                placeholder="Describe what this study set should cover..."
+                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors resize-none"
+                :class="{ 'border-red-500': aiErrors.description }"></textarea>
+              <p v-if="aiErrors.description" class="mt-2 text-sm text-red-400">{{ aiErrors.description }}</p>
+            </div>
+
+            <!-- Number of Flashcards Dropdown -->
+            <div>
+              <label for="ai-count" class="block text-sm font-medium text-gray-300 mb-2">
+                Number of Flashcards
+              </label>
+              <select id="ai-count" v-model.number="aiForm.count"
+                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors">
+                <option v-for="n in 16" :key="n" :value="n + 4">{{ n + 4 }}</option>
+              </select>
+            </div>
+
+            <!-- Modal Actions -->
+            <div class="flex items-center justify-end gap-3 pt-4">
+              <button type="button" @click="closeAiModal"
+                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
+                Cancel
+              </button>
+              <button type="submit"
+                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                :disabled="isGenerating">
+                <svg v-if="isGenerating" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
+                </svg>
+                <span>{{ isGenerating ? 'Generating...' : 'Generate' }}</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -183,6 +269,16 @@ const errors = ref<Errors>({});
 const isSubmitting = ref(false);
 const successMessage = ref('');
 const errorMessage = ref('');
+
+// AI Modal state
+const showAiModal = ref(false);
+const isGenerating = ref(false);
+const aiForm = ref({
+  title: '',
+  description: '',
+  count: 10
+});
+const aiErrors = ref<{ title?: string; description?: string }>({});
 
 // Generate unique ID
 const generateId = () => {
@@ -250,11 +346,11 @@ const handleSubmit = async () => {
       }
     });
 
-    // Upon the successful creation, we should get the studyset ID back. We can then navigate to its view page where user can add more cards or study.
+    /* Upon the successful creation, we should get the studyset ID back. 
+    We can then navigate to its view page where user can add more cards or study. */
     successMessage.value = 'Study set created successfully!';
 
     // This returns a full uuid for the newly created study set
-
     if (!response.data) {
       throw new Error('No study set ID returned from API');
     }
@@ -265,6 +361,90 @@ const handleSubmit = async () => {
     errorMessage.value = 'Failed to create study set. Please try again.';
   } finally {
     isSubmitting.value = false;
+  }
+};
+
+// Close AI modal
+const closeAiModal = () => {
+  showAiModal.value = false;
+  aiErrors.value = {};
+};
+
+// Validate AI form
+const validateAiForm = (): boolean => {
+  aiErrors.value = {};
+
+  if (!aiForm.value.title?.trim()) {
+    aiErrors.value.title = 'Title is required';
+  }
+
+  if (!aiForm.value.description?.trim()) {
+    aiErrors.value.description = 'Description is required';
+  }
+
+  return !aiErrors.value.title && !aiErrors.value.description;
+};
+
+// Handle AI generation
+const handleAiGenerate = async () => {
+  if (!validateAiForm()) {
+    return;
+  }
+
+  isGenerating.value = true;
+  errorMessage.value = '';
+
+  try {
+    // Call the AI API to generate flashcards as a stringified JSON array
+    const response = await $fetch('/api/ai/flashcards', {
+      method: 'POST',
+      body: {
+        topic: `${aiForm.value.title} - ${aiForm.value.description}`,
+        flashCardCount: aiForm.value.count
+      }
+    });
+
+    // If we get an empty array - we intentionally got an aborted response from the Ai Service
+    if (Array.isArray(response.flashcards) && response.flashcards.length === 0) {
+      errorMessage.value = 'Did not receive a meaningful response from the AI service.';
+      return;
+    }
+
+    // We received something - attempt to parse it into a JSON array
+    let parsedFlashCardData: string | null = null;
+    try {
+      parsedFlashCardData = JSON.parse(response.flashcards as string)
+    } catch (error) {
+      errorMessage.value = 'Failed to parse AI generated flashcards response from the server.' + error;
+      return;
+    }
+
+    studySet.value.title = aiForm.value.title;
+    studySet.value.description = aiForm.value.description;
+
+    try {
+      const aiResponse = await $fetch('/api/studysets', {
+        method: 'POST',
+        body: {
+          title: studySet.value.title,
+          description: studySet.value.description,
+          flashCards: parsedFlashCardData
+        }
+      });
+      closeAiModal();
+      successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
+      await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
+
+    } catch (error) {
+      console.error('Error creating study set from AI generated flashcards:', error);
+      errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try again.';
+      return;
+    }
+  } catch (error) {
+    console.error('Error generating flashcards:', error);
+    errorMessage.value = 'Failed to generate flashcards with AI. Please try again.';
+  } finally {
+    isGenerating.value = false;
   }
 };
 
