@@ -93,10 +93,18 @@
         </div>
       </div>
 
+      <!-- AI Processing Spinner -->
+      <div v-if="!showResults && isAiProcessing" class="mb-6 flex items-center justify-center">
+        <div class="flex items-center space-x-3 bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-6 py-4">
+          <div class="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-indigo-400"></div>
+          <span class="text-indigo-300 font-medium">AI is checking your answer...</span>
+        </div>
+      </div>
+
       <!-- Controls -->
       <div v-if="!showResults" class="flex flex-col space-y-4">
         <div class="flex items-center justify-between">
-          <button @click="previousCard" :disabled="currentIndex === 0"
+          <button @click="previousCard" :disabled="currentIndex === 0 || isAiProcessing"
             class="inline-flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -105,8 +113,8 @@
           </button>
 
           <div class="flex items-center space-x-3">
-            <button @click="isFlipped = !isFlipped"
-              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium">
+            <button @click="isFlipped = !isFlipped" :disabled="isAiProcessing"
+              class="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:bg-gray-800 disabled:opacity-50">
               <svg class="w-5 h-5 inline-block mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -115,11 +123,11 @@
             </button>
 
             <button @click="toggleSpeechRecognition" :class="[
-              'px-6 py-3 rounded-lg transition-colors font-medium inline-flex items-center',
+              'px-6 py-3 rounded-lg transition-colors font-medium inline-flex items-center disabled:bg-gray-800 disabled:opacity-50',
               isRecording
                 ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse'
                 : 'bg-green-600 hover:bg-green-700 text-white'
-            ]">
+            ]" :disabled="isAiProcessing">
               <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
@@ -129,7 +137,8 @@
           </div>
 
           <button @click="currentIndex === flashCards.length - 1 ? finishSession() : nextCard()"
-            class="inline-flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium"
+            :disabled="isAiProcessing"
+            class="inline-flex items-center px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium disabled:bg-gray-800 disabled:opacity-50"
             :class="currentIndex === flashCards.length - 1 ? 'bg-green-600 hover:bg-green-700' : 'bg-gray-700 hover:bg-gray-600'">
             {{ currentIndex === flashCards.length - 1 ? 'Finish' : 'Next' }}
             <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +167,7 @@
 
       <!-- Keyboard shortcuts hint -->
       <div v-if="!showResults" class="mt-8 text-center text-sm text-gray-500">
-        <p>Keyboard shortcuts: ← Previous | → Next | Space Flip</p>
+        <p>Keyboard shortcuts: ← Previous | → Next </p>
       </div>
     </div>
 
@@ -304,13 +313,7 @@ const sessionStartTime = ref<Date | null>(null);
 const sessionEndTime = ref<Date | null>(null);
 const showResults = ref(false);
 
-interface CardResult {
-  cardId: string;
-  userAnswer: string;
-  isCorrect: boolean;
-  checked: boolean;
-  answeredAt?: Date;
-}
+const isAiProcessing = ref(false);
 
 // Utility function to shuffle array
 const shuffleArray = <T>(array: T[]): T[] => {
@@ -438,6 +441,7 @@ const checkAnswer = async () => {
   // EXPERIMENT: AI-BASED ANSWER EVALUATION
   // If isCorrect is false, let's use the OpenAI arbitration to check the answer
   if (!isCorrect) {
+    isAiProcessing.value = true;
     const arbitrationResponse = await $fetch("/api/ai/answerjudge", {
       method: "POST",
       body: {
@@ -452,6 +456,8 @@ const checkAnswer = async () => {
       isCorrect = isArbitrationCorrect.isCorrect;
     }
   }
+
+  isAiProcessing.value = false;
 
   currentResult.userAnswer = userAnswer.value || transcript.value;
   currentResult.isCorrect = isCorrect;
@@ -625,6 +631,8 @@ watch(currentIndex, () => {
 
 // Keyboard shortcuts
 const handleKeyPress = (event: KeyboardEvent) => {
+  // Ignore key presses when the ai is busy
+  if (isAiProcessing.value) return;
   if (event.key === 'ArrowRight') {
     nextCard();
   } else if (event.key === 'ArrowLeft') {
