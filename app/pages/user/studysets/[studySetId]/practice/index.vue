@@ -417,15 +417,15 @@ const previousCard = () => {
   }
 };
 
-const flipCard = () => {
+const flipCard = async () => {
   // Check answer only on first flip
   if (!isFlipped.value && !cardResults.value[currentIndex.value]?.checked) {
-    checkAnswer();
+    await checkAnswer();
   }
   isFlipped.value = !isFlipped.value;
 };
 
-const checkAnswer = () => {
+const checkAnswer = async () => {
   const currentResult = cardResults.value[currentIndex.value];
   if (!currentResult || currentResult.checked) return;
 
@@ -433,7 +433,25 @@ const checkAnswer = () => {
   const providedAnswer = (userAnswer.value || transcript.value).toLowerCase().trim();
 
   // Simple exact match check (can be enhanced with fuzzy matching later)
-  const isCorrect = correctAnswer === providedAnswer || providedAnswer.includes(correctAnswer);
+  let isCorrect = correctAnswer === providedAnswer || providedAnswer.includes(correctAnswer);
+
+  // EXPERIMENT: AI-BASED ANSWER EVALUATION
+  // If isCorrect is false, let's use the OpenAI arbitration to check the answer
+  if (!isCorrect) {
+    const arbitrationResponse = await $fetch("/api/ai/answerjudge", {
+      method: "POST",
+      body: {
+        question: currentCard.value?.question,
+        correctAnswer: currentCard.value?.answer,
+        userAnswer: providedAnswer
+      }
+    })
+    if (arbitrationResponse.data) {
+      // Convert the response to a JSON and check if AI marked it correct
+      const isArbitrationCorrect = JSON.parse(arbitrationResponse.data as string) as { isCorrect: boolean, reasoning?: string };
+      isCorrect = isArbitrationCorrect.isCorrect;
+    }
+  }
 
   currentResult.userAnswer = userAnswer.value || transcript.value;
   currentResult.isCorrect = isCorrect;
