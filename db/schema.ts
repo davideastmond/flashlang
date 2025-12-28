@@ -1,4 +1,11 @@
-import { date, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  date,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+} from "drizzle-orm/pg-core";
 
 export const sessions = pgTable("sessions", {
   id: text("id").primaryKey(),
@@ -69,6 +76,19 @@ export const studySessions = pgTable("study_sessions", {
   studySetId: text("study_set_id")
     .notNull()
     .references(() => studySets.id, { onDelete: "cascade" }),
-  startedAt: timestamp("started_at").defaultNow().notNull(),
-  endedAt: timestamp("ended_at"),
+  startTime: timestamp("start_time").defaultNow().notNull(),
+  correctCount: integer("correct_count").notNull().default(0),
+  totalCount: integer("total_count").notNull().default(0),
+  results: jsonb("results")
+    .$type<
+      Array<{
+        cardId: string;
+        userAnswer: string;
+        isCorrect: boolean;
+        answeredAt: string;
+      }>
+    >()
+    .notNull()
+    .default([]),
+  endTime: timestamp("end_time"),
 });

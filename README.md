@@ -12,16 +12,18 @@ Users can also use AI to generate decks based on specific topics or themes.
 
 - User authentication
 - Flashcard creation and editing
-- AI Flashcard generation
+- Using Gemini to provide AI Flashcard generation
+- Using OpenAI to adjudicate answers in practice mode
 - Statistics tracking
 
 ## Technologies Used
 
-- Nuxt 4, Vue 3 and Vite
+- Nuxt4, Vue3
 - Tailwind CSS
 - NeonDB, Postgres
 - Drizzle ORM
 - Gemini-Flash API
+- Open AI API
 - @sidebase/nuxt-auth
 - Vercel for deployment
 - Nuxt Test Utils and Vitest for testing
@@ -31,6 +33,7 @@ Users can also use AI to generate decks based on specific topics or themes.
 - Node.js v18 or higher
 - A NeonDB account and connection string (for database hosting)
 - Credentials for Gemini-Flash API
+- Credentials for Open AI API
 
 ## Environment Variables
 
@@ -42,6 +45,7 @@ DATABASE_URL=*your_neon_db_connection_string*
 AUTH_SECRET=*your_secret_key - you can generate a string*
 AUTH_ORIGIN=http://localhost:3000/api/auth
 GEMINI_API_KEY=*obtain from google console*
+OPENAI_API_KEY=*obtain from openai*
 ```
 
 ## Migrations
