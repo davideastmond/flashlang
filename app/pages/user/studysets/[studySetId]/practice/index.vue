@@ -172,7 +172,7 @@
     </div>
 
     <!-- Results Screen -->
-    <div v-else-if="showResults" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div v-if="showResults" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-gray-800/80 backdrop-blur-sm rounded-lg shadow-2xl border border-gray-700 p-8">
         <!-- Header -->
         <div class="text-center mb-8">
@@ -601,15 +601,14 @@ const submitSessionData = async () => {
 
   console.log('Session data to be submitted:', sessionData);
 
-  // TODO: Uncomment when API endpoint is ready
-  // try {
-  //   await $fetch('/api/practice-sessions', {
-  //     method: 'POST',
-  //     body: sessionData
-  //   });
-  // } catch (err) {
-  //   console.error('Failed to submit session data:', err);
-  // }
+  try {
+    await $fetch('/api/study-sessions', {
+      method: 'POST',
+      body: sessionData
+    });
+  } catch (err) {
+    console.error('Failed to submit session data:', err);
+  }
 };
 
 const voiceRecognitionEndedCallback = () => {
