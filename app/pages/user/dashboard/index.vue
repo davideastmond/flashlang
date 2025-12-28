@@ -52,7 +52,7 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-400">Total StudySets</p>
+                <p class="text-sm font-medium text-gray-400">Total Study Sets</p>
                 <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySets }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
@@ -66,8 +66,8 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-400">Total Sessions</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalSessions }}</p>
+                <p class="text-sm font-medium text-gray-400">Total Study Sessions</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySessions }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,7 +209,7 @@ definePageMeta({
 // Stats
 const stats = ref({
   totalStudySets: 0,
-  totalSessions: 0,
+  totalStudySessions: 0,
   totalCards: 0,
   studyStreak: 0,
   accuracy: 0,
@@ -234,16 +234,12 @@ onMounted(async () => {
 // Fetch user data
 async function fetchUserData() {
   try {
-    // TODO: Implement actual API call to get user data
-    // const { data } = await useFetch('/api/user/profile');
-    // userName.value = data.value?.name || 'User';
-
     const { data } = await $fetch('/api/user/profile/stats');
 
-    // TODO: Fetch actual stats
     stats.value = {
-      ...data
+      ...data as typeof stats.value,
     };
+
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
@@ -289,18 +285,16 @@ async function fetchRecentSessions() {
 }
 
 // Handle create session
-function handleCreateSession() {
-  // TODO: Navigate to create session page
-  console.log('Create new session');
-  // navigateTo('/sessions/create');
+async function handleCreateSession() {
+  // Navigate to create session page
+  await navigateTo('/studysets/new');
 }
 
 
 // Handle open session
-function handleOpenSession(sessionId: string) {
-  // TODO: Navigate to session detail page
-  console.log('Open session:', sessionId);
-  // navigateTo(`/sessions/${sessionId}`);
+async function handleOpenSession(sessionId: string) {
+  // Navigate to session detail page
+  await navigateTo(`/studysets/${toShortenedUuid(sessionId)}`);
 }
 
 // Get status class for badge
