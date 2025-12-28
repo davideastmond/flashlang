@@ -1,14 +1,5 @@
-import { getServerSession } from "#auth";
-
 // Using OpenAI, we can implement a simple answer judging mechanism.
 export default defineEventHandler(async (event) => {
-  const serverSession = await getServerSession(event);
-  if (!serverSession || !serverSession.user) {
-    return createError({
-      statusCode: 401,
-      statusMessage: "Unauthorized",
-    });
-  }
   const body = await readBody<{
     question: String;
     userAnswer: string;
