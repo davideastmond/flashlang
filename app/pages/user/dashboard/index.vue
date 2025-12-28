@@ -52,7 +52,7 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-400">Total StudySets</p>
+                <p class="text-sm font-medium text-gray-400">Total Study Sets</p>
                 <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySets }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
@@ -66,8 +66,8 @@
           <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 border border-gray-700">
             <div class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-medium text-gray-400">Total Sessions</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalSessions }}</p>
+                <p class="text-sm font-medium text-gray-400">Total Study Sessions</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySessions }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
       <div>
         <h2 class="text-xl font-semibold text-white mb-4">Recent History</h2>
         <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border border-gray-700">
-          <div v-if="recentSessions.length === 0" class="p-8 text-center">
+          <div v-if="stats.recentSessions.length === 0" class="p-8 text-center">
             <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -148,17 +148,14 @@
           </div>
 
           <ul v-else class="divide-y divide-gray-700">
-            <li v-for="session in recentSessions" :key="session.id"
+            <li v-for="session in stats.recentSessions" :key="session.id"
               class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors"
               @click="handleOpenSession(session.id)">
               <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-2">
                     <h3 class="text-sm font-medium text-white truncate">{{ session.title }}</h3>
-                    <span class="ml-2 px-2 py-1 text-xs font-medium rounded-full"
-                      :class="getStatusClass(session.status)">
-                      {{ session.status }}
-                    </span>
+
                   </div>
                   <div class="flex items-center text-sm text-gray-400 space-x-4">
                     <span class="flex items-center">
@@ -166,21 +163,22 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {{ formatDate(session.date) }}
+                      {{ formatDate(new Date(session.startTime)) }}
                     </span>
                     <span class="flex items-center">
                       <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
                       </svg>
-                      {{ session.cardsCount }} cards
+                      {{ session.totalCount }} cards
                     </span>
-                    <span v-if="session.score !== null" class="flex items-center">
+                    <span v-if="session.correctCount !== null" class="flex items-center">
                       <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
-                      {{ session.score }}% correct
+                      {{ session.correctCount !== undefined && session.totalCount !== 0 ?
+                        Math.round((session.correctCount / session.totalCount) * 100) : 0 }}% correct
                     </span>
                   </div>
                 </div>
@@ -199,7 +197,8 @@
 </template>
 
 <script setup lang="ts">
-
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
@@ -207,131 +206,68 @@ definePageMeta({
 });
 
 // Stats
-const stats = ref({
+const stats = ref<{
+  totalStudySets: number;
+  totalStudySessions: number;
+  totalCards: number;
+  studyStreak: number;
+  accuracy: number;
+  recentSessions: Array<{
+    id: string;
+    title: string;
+    startTime: string;
+    totalCount: number;
+    correctCount: number;
+  }>;
+}
+>({
   totalStudySets: 0,
-  totalSessions: 0,
+  totalStudySessions: 0,
   totalCards: 0,
   studyStreak: 0,
   accuracy: 0,
+  recentSessions: [],
 });
 
-// Recent sessions
-const recentSessions = ref<Array<{
-  id: string;
-  title: string;
-  date: Date;
-  cardsCount: number;
-  status: 'completed' | 'in-progress' | 'not-started';
-  score: number | null;
-}>>([]);
 
 // Fetch user data on mount
 onMounted(async () => {
   await fetchUserData();
-  await fetchRecentSessions();
 });
 
 // Fetch user data
 async function fetchUserData() {
   try {
-    // TODO: Implement actual API call to get user data
-    // const { data } = await useFetch('/api/user/profile');
-    // userName.value = data.value?.name || 'User';
-
     const { data } = await $fetch('/api/user/profile/stats');
 
-    // TODO: Fetch actual stats
     stats.value = {
-      ...data
+      ...data as typeof stats.value,
     };
+
   } catch (error) {
     console.error('Error fetching user data:', error);
   }
 }
 
-// Fetch recent sessions
-async function fetchRecentSessions() {
-  try {
-    // TODO: Implement actual API call to get recent sessions
-    // const { data } = await useFetch('/api/sessions/recent');
-    // recentSessions.value = data.value || [];
-
-    // Placeholder data
-    recentSessions.value = [
-      {
-        id: '1',
-        title: 'Spanish Vocabulary - Lesson 5',
-        date: new Date('2025-12-22'),
-        cardsCount: 20,
-        status: 'completed',
-        score: 90,
-      },
-      {
-        id: '2',
-        title: 'French Verbs - Past Tense',
-        date: new Date('2025-12-21'),
-        cardsCount: 15,
-        status: 'completed',
-        score: 78,
-      },
-      {
-        id: '3',
-        title: 'German Phrases - Travel',
-        date: new Date('2025-12-20'),
-        cardsCount: 25,
-        status: 'in-progress',
-        score: null,
-      },
-    ];
-  } catch (error) {
-    console.error('Error fetching recent sessions:', error);
-  }
-}
-
 // Handle create session
-function handleCreateSession() {
-  // TODO: Navigate to create session page
-  console.log('Create new session');
-  // navigateTo('/sessions/create');
+async function handleCreateSession() {
+  // Navigate to create session page
+  await navigateTo('/studysets/new');
 }
 
 
 // Handle open session
-function handleOpenSession(sessionId: string) {
-  // TODO: Navigate to session detail page
-  console.log('Open session:', sessionId);
-  // navigateTo(`/sessions/${sessionId}`);
+async function handleOpenSession(sessionId: string) {
+  // Navigate to session detail page
+  await navigateTo(`/studysets/${toShortenedUuid(sessionId)}`);
 }
 
-// Get status class for badge
-function getStatusClass(status: string): string {
-  switch (status) {
-    case 'completed':
-      return 'bg-green-500/20 text-green-300 border border-green-500/30';
-    case 'in-progress':
-      return 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
-    case 'not-started':
-      return 'bg-gray-500/20 text-gray-300 border border-gray-500/30';
-    default:
-      return 'bg-gray-500/20 text-gray-300 border border-gray-500/30';
-  }
-}
+
 
 // Format date
 function formatDate(date: Date): string {
-  const now = new Date();
-  const diffTime = Math.abs(now.getTime() - new Date(date).getTime());
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  if (diffDays === 0) {
-    return 'Today';
-  } else if (diffDays === 1) {
-    return 'Yesterday';
-  } else if (diffDays < 7) {
-    return `${diffDays} days ago`;
-  } else {
-    return new Date(date).toLocaleDateString();
-  }
+  dayjs.extend(relativeTime);
+  return dayjs(date).fromNow();
 }
 </script>
 

@@ -26,9 +26,6 @@
           <NuxtLink to="/user/studysets/new" class="text-gray-300 hover:text-white transition-colors font-medium">
             Create Set
           </NuxtLink>
-          <NuxtLink to="/user/flashcards" class="text-gray-300 hover:text-white transition-colors font-medium">
-            Flash Cards
-          </NuxtLink>
           <NuxtLink to="/user/progress" class="text-gray-300 hover:text-white transition-colors font-medium">
             Progress
           </NuxtLink>
