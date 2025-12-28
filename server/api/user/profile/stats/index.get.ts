@@ -1,5 +1,5 @@
 import { getServerSession } from "#auth";
-import { count, eq } from "drizzle-orm";
+import { count, desc, eq } from "drizzle-orm";
 import { db } from "~~/db";
 import { studySessions, studySetFlashCards, studySets } from "~~/db/schema";
 
@@ -20,12 +20,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const totalStudySessions = await db
-      .select({ value: count() })
-      .from(studySessions)
-      .where(eq(studySessions.userId, serverSession.user.id as string));
-
-    // Grab all study sessions
+    // Grab all study sessions to calculate
     const studySessionData = await db
       .select()
       .from(studySessions)
@@ -45,7 +40,19 @@ export default defineEventHandler(async (event) => {
         eq(studySets.id, studySetFlashCards.studySetId)
       );
 
-    // Calculate accuracy from study sessions but calculating the average correct rate
+    const namedListOfStudySessions = await db
+      .select({
+        id: studySessions.id,
+        title: studySets.title,
+        startTime: studySessions.startTime,
+        totalCount: studySessions.totalCount,
+        correctCount: studySessions.correctCount,
+      })
+      .from(studySessions)
+      .where(eq(studySessions.userId, serverSession.user.id as string))
+      .innerJoin(studySets, eq(studySessions.studySetId, studySets.id))
+      .orderBy(desc(studySessions.startTime))
+      .limit(3);
 
     return {
       data: {
@@ -53,7 +60,8 @@ export default defineEventHandler(async (event) => {
         totalCards: totalCards[0]?.value || 0,
         studyStreak: 7,
         accuracy: calculateAccuracy(studySessionData),
-        totalStudySessions: totalStudySessions[0]?.value || 0,
+        totalStudySessions: studySessionData.length,
+        recentSessions: namedListOfStudySessions,
       },
     };
   } catch (error) {
