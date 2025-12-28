@@ -479,7 +479,6 @@ const initSpeechRecognition = () => {
     recognition.continuous = false;
     recognition.interimResults = true;
 
-    console.info('Setting recognition language to:', studySet.value?.language);
     recognition.lang = studySet.value?.language || 'en-US';
 
     recognition.onstart = () => {
@@ -599,8 +598,6 @@ const submitSessionData = async () => {
     }
   };
 
-  console.log('Session data to be submitted:', sessionData);
-
   try {
     await $fetch('/api/study-sessions', {
       method: 'POST',
@@ -642,7 +639,6 @@ const handleKeyPress = (event: KeyboardEvent) => {
 watch(studySet, (newSet) => {
   if (newSet && recognition) {
     recognition.lang = newSet.language || 'en-US';
-    console.info('Updated recognition language to:', recognition.lang);
   }
 });
 // Load data on mount
