@@ -11,11 +11,20 @@ export const createStudySessionValidator = z.object({
   results: z.array(
     z.object({
       cardId: z.uuid(),
-      userAnswer: z.string(),
+      userAnswer: z.string().optional(),
       isCorrect: z.boolean(),
-      answeredAt: z.string().refine((val) => !isNaN(Date.parse(val)), {
-        message: "Invalid answeredAt format",
-      }),
+      answeredAt: z
+        .string()
+        .optional()
+        .refine(
+          (val) => {
+            if (!val) return true;
+            return !isNaN(Date.parse(val));
+          },
+          {
+            message: "Invalid answeredAt format",
+          }
+        ),
     })
   ),
   score: z.object({

@@ -83,9 +83,9 @@ export const studySessions = pgTable("study_sessions", {
     .$type<
       Array<{
         cardId: string;
-        userAnswer: string;
+        userAnswer?: string;
         isCorrect: boolean;
-        answeredAt: string;
+        answeredAt?: string;
       }>
     >()
     .notNull()

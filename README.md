@@ -10,23 +10,54 @@ Users can also use AI to generate decks based on specific topics or themes.
 
 ## Features
 
-- User authentication
-- Flashcard creation and editing
-- Using Gemini to provide AI Flashcard generation
+### Authentication
+
+- Credential authentication
+
+### Flashcards and StudySets
+
+- Create study sets (decks) and flashcards
+- Edit and delete flashcards and study sets
+- Create study sets using Gemini to provide AI Flashcard generation
 - Using OpenAI to adjudicate answers in practice mode
-- Statistics tracking
+- Statistics tracking via dashboard
+- Dictation of answers using the Web Speech Browser API
 
 ## Technologies Used
 
+### Full-stack framework
+
 - Nuxt4, Vue3
+
+### CSS framework
+
 - Tailwind CSS
-- NeonDB, Postgres
-- Drizzle ORM
+
+### AI
+
 - Gemini-Flash API
 - Open AI API
+
+### Database Stack
+
+- NeonDB, Postgres
+- Drizzle ORM
+
+### Authentication
+
 - @sidebase/nuxt-auth
-- Vercel for deployment
-- Nuxt Test Utils and Vitest for testing
+
+### Testing
+
+- Nuxt Test Utils and Vitest
+
+### Deployment
+
+- Vercel
+
+### Other Libraries and Tools
+
+- Web Speech API
 
 ## Requirements
 
