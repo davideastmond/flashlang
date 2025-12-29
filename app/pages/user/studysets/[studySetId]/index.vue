@@ -99,11 +99,15 @@
               placeholder="Optional description"></textarea>
           </div>
           <div class="flex space-x-3">
-            <button @click="saveStudySetInfo" :disabled="isSaving"
+            <button @click="saveStudySetInfo" :disabled="isSaving || isDeletingStudySet"
               class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
               {{ isSaving ? 'Saving...' : 'Save Changes' }}
             </button>
-            <button @click="cancelEditingInfo" :disabled="isSaving"
+            <button @click="showDeleteStudySetModal = true" :disabled="isSaving || isDeletingStudySet"
+              class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+              Delete Set
+            </button>
+            <button @click="cancelEditingInfo" :disabled="isSaving || isDeletingStudySet"
               class="px-6 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg transition-colors">
               Cancel
             </button>
@@ -238,6 +242,38 @@
           </div>
         </div>
       </div>
+
+      <!-- Delete Study Set Confirmation Modal -->
+      <div v-if="showDeleteStudySetModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        @click.self="showDeleteStudySetModal = false">
+        <div class="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full p-8 border border-red-500/50">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mr-4">
+              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white">Delete Study Set?</h3>
+          </div>
+          <p class="text-gray-300 mb-2">Are you sure you want to delete <span class="font-semibold text-white">{{
+            studySet?.title }}</span>?</p>
+          <p class="text-gray-400 mb-6 text-sm">This will permanently delete all {{ studySet?.flashCards?.length || 0 }}
+            flash cards. This action cannot be undone.</p>
+
+          <div class="flex space-x-3">
+            <button @click="confirmDeleteStudySet" :disabled="isDeletingStudySet"
+              class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
+              {{ isDeletingStudySet ? 'Deleting...' : 'Delete Study Set' }}
+            </button>
+            <button @click="showDeleteStudySetModal = false" :disabled="isDeletingStudySet"
+              class="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -269,6 +305,9 @@ const studySet = ref<StudySet & {
 // Edit mode state
 const isEditingInfo = ref(false);
 const isSaving = ref(false);
+const isDeletingStudySet = ref(false);
+const showDeleteStudySetModal = ref(false);
+
 const editForm = ref({
   title: "",
   description: "",
@@ -353,6 +392,25 @@ const saveStudySetInfo = async () => {
     isSaving.value = false;
   }
 };
+
+const confirmDeleteStudySet = async () => {
+  isDeletingStudySet.value = true;
+  try {
+    const studySetFullId = getFullUuid(studySetId);
+    await $fetch(`/api/studysets/${studySetFullId}`, {
+      method: "DELETE",
+    });
+
+    // Upon successful delete, redirect to dashboard
+    await navigateTo("/user/dashboard");
+  } catch (error) {
+    console.error("Error deleting study set:", error);
+    alert("Failed to delete study set");
+    showDeleteStudySetModal.value = false;
+  } finally {
+    isDeletingStudySet.value = false;
+  }
+}
 
 // Add flash card
 const closeAddCardModal = () => {
