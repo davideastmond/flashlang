@@ -12,15 +12,6 @@
         <!-- Header -->
         <h1 class="text-3xl font-bold text-slate-50 text-center mb-2 tracking-tight">Welcome Back</h1>
         <p class="text-slate-400 text-center mb-8 text-sm">Sign in to continue your learning journey</p>
-        <!-- Divider -->
-        <div class="relative my-7">
-          <div class="absolute inset-0 flex items-center">
-            <div class="w-full border-t border-white/10"></div>
-          </div>
-          <div class="relative flex justify-center text-sm">
-            <span class="px-4 bg-white/5 text-slate-500">or</span>
-          </div>
-        </div>
 
         <!-- Login Form -->
         <form @submit.prevent="handleSignin" class="space-y-5">
