@@ -62,7 +62,19 @@
               <span>Created {{ formatDate(studySet.createdAt) }}</span>
             </div>
           </div>
-          <div class="flex justify-end">
+
+          <div class="flex justify-between">
+            <!-- Add a section that shows the last study Session for this and the score -->
+            <div v-if="studySet.lastStudiedAt" class="flex items-center text-sm text-gray-400">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Last studied {{ formatDate(studySet.lastStudiedAt.startTime) }} | {{
+                studySet.lastStudiedAt.correctCount }} / {{ studySet.lastStudiedAt.totalCount }}
+                ({{ formatPercentageScore(studySet.lastStudiedAt.correctCount, studySet.lastStudiedAt.totalCount) }})
+              </span>
+            </div>
             <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySet.id)}/practice`">
               <button
                 class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
@@ -86,11 +98,15 @@
               placeholder="Optional description"></textarea>
           </div>
           <div class="flex space-x-3">
-            <button @click="saveStudySetInfo" :disabled="isSaving"
+            <button @click="saveStudySetInfo" :disabled="isSaving || isDeletingStudySet"
               class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
               {{ isSaving ? 'Saving...' : 'Save Changes' }}
             </button>
-            <button @click="cancelEditingInfo" :disabled="isSaving"
+            <button @click="showDeleteStudySetModal = true" :disabled="isSaving || isDeletingStudySet"
+              class="px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium">
+              Delete Set
+            </button>
+            <button @click="cancelEditingInfo" :disabled="isSaving || isDeletingStudySet"
               class="px-6 py-2 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg transition-colors">
               Cancel
             </button>
@@ -225,6 +241,38 @@
           </div>
         </div>
       </div>
+
+      <!-- Delete Study Set Confirmation Modal -->
+      <div v-if="showDeleteStudySetModal"
+        class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 z-50"
+        @click.self="showDeleteStudySetModal = false">
+        <div class="bg-gray-800 rounded-lg shadow-2xl max-w-md w-full p-8 border border-red-500/50">
+          <div class="flex items-center mb-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mr-4">
+              <svg class="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white">Delete Study Set?</h3>
+          </div>
+          <p class="text-gray-300 mb-2">Are you sure you want to delete <span class="font-semibold text-white">{{
+            studySet?.title }}</span>?</p>
+          <p class="text-gray-400 mb-6 text-sm">This will permanently delete all {{ studySet?.flashCards?.length || 0 }}
+            flash cards. This action cannot be undone.</p>
+
+          <div class="flex space-x-3">
+            <button @click="confirmDeleteStudySet" :disabled="isDeletingStudySet"
+              class="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-red-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
+              {{ isDeletingStudySet ? 'Deleting...' : 'Delete Study Set' }}
+            </button>
+            <button @click="showDeleteStudySetModal = false" :disabled="isDeletingStudySet"
+              class="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg transition-colors">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -247,11 +295,18 @@ definePageMeta({
 // State
 const loading = ref(true);
 const error = ref<string | null>(null);
-const studySet = ref<StudySet & { flashCards?: FlashCard[] } | null>(null);
+const studySet = ref<StudySet & {
+  flashCards?: FlashCard[], lastStudiedAt?: {
+    id: string, userId: string, studySetId: string, startTime: string, correctCount: number, totalCount: number
+  }
+} | null>(null);
 
 // Edit mode state
 const isEditingInfo = ref(false);
 const isSaving = ref(false);
+const isDeletingStudySet = ref(false);
+const showDeleteStudySetModal = ref(false);
+
 const editForm = ref({
   title: "",
   description: "",
@@ -337,6 +392,25 @@ const saveStudySetInfo = async () => {
   }
 };
 
+const confirmDeleteStudySet = async () => {
+  isDeletingStudySet.value = true;
+  try {
+    const studySetFullId = getFullUuid(studySetId);
+    await $fetch(`/api/studysets/${studySetFullId}`, {
+      method: "DELETE",
+    });
+
+    // Upon successful delete, redirect to dashboard
+    await navigateTo("/user/dashboard");
+  } catch (error) {
+    console.error("Error deleting study set:", error);
+    alert("Failed to delete study set");
+    showDeleteStudySetModal.value = false;
+  } finally {
+    isDeletingStudySet.value = false;
+  }
+}
+
 // Add flash card
 const closeAddCardModal = () => {
   showAddCardModal.value = false;
@@ -414,6 +488,11 @@ const formatDate = (date: Date | string) => {
     month: "long",
     day: "numeric",
   });
+};
+
+const formatPercentageScore = (correctCount: number, totalCount: number) => {
+  if (totalCount === 0) return "0%";
+  return `${Math.round((correctCount / totalCount) * 100)}%`;
 };
 
 // Load data on mount
