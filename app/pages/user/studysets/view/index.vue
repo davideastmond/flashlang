@@ -118,7 +118,7 @@ import { toShortenedUuid } from '~~/shared/utils/uuid-convert';
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
-  layout: 'headerbar'
+  layout: 'user-layout'
 });
 // Protect with authentication
 

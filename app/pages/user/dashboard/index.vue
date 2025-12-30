@@ -202,7 +202,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
-  layout: 'headerbar'
+  layout: 'user-layout'
 });
 
 // Stats
