@@ -438,26 +438,21 @@ const checkAnswer = async () => {
   // Simple exact match check (can be enhanced with fuzzy matching later)
   let isCorrect = correctAnswer === providedAnswer || providedAnswer.includes(correctAnswer);
 
-  // EXPERIMENT: AI-BASED ANSWER EVALUATION
-  // If isCorrect is false, let's use the OpenAI arbitration to check the answer
-  if (!isCorrect) {
+
+  if (!isCorrect && providedAnswer !== '') {
     isAiProcessing.value = true;
-    const arbitrationResponse = await $fetch("/api/ai/answerjudge", {
-      method: "POST",
-      body: {
-        question: currentCard.value?.question,
-        correctAnswer: currentCard.value?.answer,
-        userAnswer: providedAnswer
-      }
-    })
-    if (arbitrationResponse.data) {
-      // Convert the response to a JSON and check if AI marked it correct
-      const isArbitrationCorrect = JSON.parse(arbitrationResponse.data as string) as { isCorrect: boolean, reasoning?: string };
-      isCorrect = isArbitrationCorrect.isCorrect;
-    }
+    await checkAnswerUsingAI(currentCard.value?.question || '', correctAnswer, providedAnswer)
+      .then(result => {
+        isCorrect = result;
+      })
+      .catch(err => {
+        console.error("AI answer checking failed:", err);
+      })
+      .finally(() => {
+        isAiProcessing.value = false;
+      })
   }
 
-  isAiProcessing.value = false;
 
   currentResult.userAnswer = userAnswer.value || transcript.value;
   currentResult.isCorrect = isCorrect;
@@ -465,6 +460,22 @@ const checkAnswer = async () => {
   currentResult.answeredAt = new Date();
 };
 
+const checkAnswerUsingAI = async (question: string, correctAnswer: string, userAnswer: string): Promise<boolean> => {
+  const response = await $fetch("/api/ai/answerjudge", {
+    method: "POST",
+    body: {
+      question,
+      correctAnswer,
+      userAnswer
+    }
+  });
+
+  if (response.data) {
+    const result = JSON.parse(response.data as string) as { isCorrect: boolean, reasoning?: string };
+    return result.isCorrect;
+  }
+  return false;
+};
 // Speech Recognition
 const initSpeechRecognition = () => {
   if (typeof window !== 'undefined') {

@@ -9,9 +9,13 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@sidebase/nuxt-auth",
     "@nuxt/test-utils/module",
+    "@nuxt/image",
   ],
   app: {
     pageTransition: { name: "page", mode: "out-in" },
+    head: {
+      link: [{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+    },
   },
   alias: {
     "~/db": resolve(__dirname, "./db"),

@@ -62,7 +62,19 @@
               <span>Created {{ formatDate(studySet.createdAt) }}</span>
             </div>
           </div>
-          <div class="flex justify-end">
+
+          <div class="flex justify-between">
+            <!-- Add a section that shows the last study Session for this and the score -->
+            <div v-if="studySet.lastStudiedAt" class="flex items-center text-sm text-gray-400">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>Last studied {{ formatDate(studySet.lastStudiedAt.startTime) }} | {{
+                studySet.lastStudiedAt.correctCount }} / {{ studySet.lastStudiedAt.totalCount }}
+                ({{ formatPercentageScore(studySet.lastStudiedAt.correctCount, studySet.lastStudiedAt.totalCount) }})
+              </span>
+            </div>
             <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySet.id)}/practice`">
               <button
                 class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
@@ -283,7 +295,11 @@ definePageMeta({
 // State
 const loading = ref(true);
 const error = ref<string | null>(null);
-const studySet = ref<StudySet & { flashCards?: FlashCard[] } | null>(null);
+const studySet = ref<StudySet & {
+  flashCards?: FlashCard[], lastStudiedAt?: {
+    id: string, userId: string, studySetId: string, startTime: string, correctCount: number, totalCount: number
+  }
+} | null>(null);
 
 // Edit mode state
 const isEditingInfo = ref(false);
@@ -472,6 +488,11 @@ const formatDate = (date: Date | string) => {
     month: "long",
     day: "numeric",
   });
+};
+
+const formatPercentageScore = (correctCount: number, totalCount: number) => {
+  if (totalCount === 0) return "0%";
+  return `${Math.round((correctCount / totalCount) * 100)}%`;
 };
 
 // Load data on mount

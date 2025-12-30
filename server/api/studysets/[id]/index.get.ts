@@ -1,8 +1,13 @@
 // Fetch a specific study set with its flash cards
 import { getServerSession } from "#auth";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "~~/db";
-import { flashCards, studySetFlashCards, studySets } from "~~/db/schema";
+import {
+  flashCards,
+  studySessions,
+  studySetFlashCards,
+  studySets,
+} from "~~/db/schema";
 
 export default defineEventHandler(async (event) => {
   const serverSession = await getServerSession(event);
@@ -56,11 +61,19 @@ export default defineEventHandler(async (event) => {
     )
     .where(eq(studySetFlashCards.studySetId, studySetId));
 
+  const lastStudiedAtStat = await db
+    .select()
+    .from(studySessions)
+    .where(eq(studySessions.studySetId, studySetId))
+    .orderBy(desc(studySessions.startTime))
+    .limit(1);
+
   return {
     success: true,
     data: {
       ...studySet[0],
       flashCards: cards,
+      lastStudiedAt: lastStudiedAtStat.length > 0 ? lastStudiedAtStat[0] : null,
     },
   };
 });
