@@ -6,4 +6,5 @@ export type StudySet = {
   language: string;
   createdAt: Date;
   updatedAt: Date;
+  cefrLevel: string | null;
 };
