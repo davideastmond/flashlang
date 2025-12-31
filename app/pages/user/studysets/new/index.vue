@@ -131,7 +131,7 @@
           </NuxtLink>
 
           <div class="flex gap-4">
-            <button type="button" @click="showAiModal = true"
+            <button type="button" @click="showAiModal = true" :disabled="isGenerating"
               class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -142,14 +142,14 @@
 
             <button type="submit"
               class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              :disabled="isSubmitting">
+              :disabled="isSubmitting || isGenerating">
               <svg v-if="isSubmitting" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                 <path class="opacity-75" fill="currentColor"
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                 </path>
               </svg>
-              <span>{{ isSubmitting ? 'Creating...' : 'Create Study Set' }}</span>
+              <span>{{ isSubmitting || isGenerating ? 'Creating...' : 'Create Study Set' }}</span>
             </button>
           </div>
         </div>
@@ -176,107 +176,17 @@
     </div>
 
     <!-- AI Generation Modal -->
-    <Teleport to="body">
-      <div v-if="showAiModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75"
-        @click.self="closeAiModal">
-        <div class="bg-gray-800 border border-gray-700 rounded-lg max-w-md w-full p-6 shadow-2xl">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-bold text-white flex items-center space-x-2">
-              <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              <span>Create with AI</span>
-            </h3>
-            <button @click="closeAiModal" class="text-gray-400 hover:text-white transition-colors">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-
-          <form @submit.prevent="handleAiGenerate" class="space-y-4">
-            <!-- Title Input -->
-            <div>
-              <label for="ai-title" class="block text-sm font-medium text-gray-300 mb-2">
-                Title <span class="text-red-400">*</span>
-              </label>
-              <input id="ai-title" v-model="aiForm.title" type="text" placeholder="e.g., Spanish Vocabulary - Level 1"
-                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                :class="{ 'border-red-500': aiErrors.title }" />
-              <p v-if="aiErrors.title" class="mt-2 text-sm text-red-400">{{ aiErrors.title }}</p>
-            </div>
-
-            <!-- Description Input -->
-            <div>
-              <label for="ai-description" class="block text-sm font-medium text-gray-300 mb-2">
-                Description <span class="text-red-400">*</span>
-              </label>
-              <textarea id="ai-description" v-model="aiForm.description" rows="4"
-                placeholder="Describe what this study set should cover..."
-                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors resize-none"
-                :class="{ 'border-red-500': aiErrors.description }"></textarea>
-              <p v-if="aiErrors.description" class="mt-2 text-sm text-red-400">{{ aiErrors.description }}</p>
-            </div>
-
-            <!-- Language Select -->
-            <div>
-              <label for="ai-language" class="block text-sm font-medium text-gray-300 mb-2">
-                Language <span class="text-red-400">*</span>
-              </label>
-              <select id="ai-language" v-model="aiForm.language"
-                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                :class="{ 'border-red-500': aiErrors.language }">
-                <option value="" disabled>Select a language</option>
-                <option v-for="lang in SUPPORTED_LANGUAGES" :key="lang.code" :value="lang.code">
-                  {{ lang.name }}
-                </option>
-              </select>
-              <p v-if="aiErrors.language" class="mt-2 text-sm text-red-400">{{ aiErrors.language }}</p>
-            </div>
-            <!-- Number of Flashcards Dropdown -->
-            <div>
-              <label for="ai-count" class="block text-sm font-medium text-gray-300 mb-2">
-                Number of Flashcards
-              </label>
-              <select id="ai-count" v-model.number="aiForm.count"
-                class="w-full px-4 py-3 bg-gray-900 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors">
-                <option v-for="n in 16" :key="n" :value="n + 4">{{ n + 4 }}</option>
-              </select>
-            </div>
-
-            <!-- Modal Actions -->
-            <div class="flex items-center justify-end gap-3 pt-4">
-              <button type="button" @click="closeAiModal"
-                class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
-                Cancel
-              </button>
-              <button type="submit"
-                class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                :disabled="isGenerating">
-                <svg v-if="isGenerating" class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                  <path class="opacity-75" fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                  </path>
-                </svg>
-                <span>{{ isGenerating ? 'Generating...' : 'Generate' }}</span>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </Teleport>
+    <AiGenerationModal v-if="showAiModal" :onSubmit="handleAiGenerate" :closeAiModal="closeAiModal" />
   </div>
 
 </template>
 
 <script setup lang="ts">
+import AiGenerationModal from '~/components/ai-generation-modal.vue';
+import type { AIFormAttributes } from '~~/shared/types/definitions/ai-form-attributes';
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
 import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
-// Define types
-
 
 interface Errors {
   title?: string;
@@ -288,7 +198,7 @@ interface Errors {
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
-  layout: 'headerbar'
+  layout: 'user-layout'
 });
 
 // Reactive state
@@ -307,13 +217,6 @@ const errorMessage = ref('');
 // AI Modal state
 const showAiModal = ref(false);
 const isGenerating = ref(false);
-const aiForm = ref({
-  title: '',
-  description: '',
-  count: 10,
-  language: ''
-});
-const aiErrors = ref<{ title?: string; description?: string; language?: string }>({});
 
 // Generate unique ID
 const generateId = () => {
@@ -405,45 +308,23 @@ const handleSubmit = async () => {
 // Close AI modal
 const closeAiModal = () => {
   showAiModal.value = false;
-  aiErrors.value = {};
 };
 
-// Validate AI form
-const validateAiForm = (): boolean => {
-  aiErrors.value = {};
-
-  if (!aiForm.value.title?.trim()) {
-    aiErrors.value.title = 'Title is required';
-  }
-
-  if (!aiForm.value.description?.trim()) {
-    aiErrors.value.description = 'Description is required';
-  }
-
-  if (!aiForm.value.language?.trim()) {
-    aiErrors.value.language = 'Language is required';
-  }
-
-  return !aiErrors.value.title && !aiErrors.value.description && !aiErrors.value.language;
-};
 
 // Handle AI generation
-const handleAiGenerate = async () => {
-  if (!validateAiForm()) {
-    return;
-  }
-
+const handleAiGenerate = async (attributes: AIFormAttributes) => {
   isGenerating.value = true;
   errorMessage.value = '';
 
+  const concatTitleDescription = `${attributes.cefrLanguage} ${attributes.languageArea} at the ${attributes.cefrLevel} level`
   try {
     // Call the AI API to generate flashcards as a stringified JSON array
     const response = await $fetch('/api/ai/flashcards', {
       method: 'POST',
       body: {
-        language: aiForm.value.language,
-        topic: `${aiForm.value.title} - ${aiForm.value.description}`,
-        flashCardCount: aiForm.value.count
+        language: attributes.language,
+        topic: concatTitleDescription,
+        flashCardCount: attributes.count
       }
     });
 
@@ -462,17 +343,17 @@ const handleAiGenerate = async () => {
       return;
     }
 
-    studySet.value.title = aiForm.value.title;
-    studySet.value.description = aiForm.value.description;
+    studySet.value.title = `${SUPPORTED_LANGUAGES.find(lang => lang.code === attributes.cefrLanguage)?.name || 'Language'} ${generateId()} - ${attributes.languageArea} (${attributes.cefrLevel})`;
+    studySet.value.description = concatTitleDescription;
     try {
       const aiResponse = await createNewStudySet(
         studySet.value.title as string,
         studySet.value.description as string,
         parsedFlashCardData as unknown as FlashCard[],
-        aiForm.value.language
+        attributes.language
       );
       closeAiModal();
-      successMessage.value = `Successfully generated ${aiForm.value.count} flashcards with AI!`;
+      successMessage.value = `Successfully generated flashcards with AI!`;
       await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
     } catch (error) {
       console.error('Error creating study set from AI generated flashcards:', error);
