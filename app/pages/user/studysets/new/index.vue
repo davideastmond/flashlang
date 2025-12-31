@@ -132,8 +132,8 @@
 
           <div class="flex gap-4">
             <button type="button" @click="showAiModal = true" :disabled="isGenerating"
-              class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              class="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors font-medium flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg v-if="isGenerating" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
@@ -172,6 +172,17 @@
           </svg>
           <p class="text-red-400">{{ errorMessage }}</p>
         </div>
+      </div>
+    </div>
+
+    <!-- Full Screen Loading Overlay -->
+    <div v-if="isGenerating" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+      <div class="text-center">
+        <div
+          class="inline-block w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4">
+        </div>
+        <p class="text-white text-xl font-semibold">Generating flashcards with AI...</p>
+        <p class="text-gray-400 mt-2">This may take a moment</p>
       </div>
     </div>
 
@@ -323,7 +334,8 @@ const handleAiGenerate = async (attributes: AIFormAttributes) => {
       method: 'POST',
       body: {
         language: attributes.language,
-        topic: concatTitleDescription,
+        cefrLanguage: attributes.cefrLanguage,
+        topic: attributes.languageArea,
         flashCardCount: attributes.count
       }
     });
