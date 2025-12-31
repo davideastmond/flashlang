@@ -343,7 +343,7 @@ const handleAiGenerate = async (attributes: AIFormAttributes) => {
       return;
     }
 
-    studySet.value.title = `${SUPPORTED_LANGUAGES.find(lang => lang.code === attributes.cefrLanguage)?.name || 'Language'} ${generateId()} - ${attributes.languageArea} (${attributes.cefrLevel})`;
+    studySet.value.title = `${SUPPORTED_LANGUAGES.find(lang => lang.code === attributes.cefrLanguage)?.name || 'Language'} - ${attributes.languageArea} (${attributes.cefrLevel})`;
     studySet.value.description = concatTitleDescription;
     try {
       const aiResponse = await createNewStudySet(
