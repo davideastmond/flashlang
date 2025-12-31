@@ -1,5 +1,5 @@
 export const SUPPORTED_LANGUAGES = [
-  { code: "en-US", name: "English (United States)" },
+  { code: "en-US", name: "English (US)" },
   { code: "es-ES", name: "Spanish" },
   { code: "fr-FR", name: "French" },
   { code: "it-IT", name: "Italian" },
@@ -7,4 +7,39 @@ export const SUPPORTED_LANGUAGES = [
   { code: "de-DE", name: "German" },
   { code: "pt-PT", name: "Portuguese (Portugal)" },
   { code: "pt-BR", name: "Portuguese (Brazil)" },
+];
+
+export const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+export const LANGUAGE_LEARNING_AREAS = [
+  { code: "greetings-introductions", name: "Greetings & Introductions" },
+  { code: "numbers-time", name: "Numbers & Time" },
+  { code: "food-drinks", name: "Food & Drinks" },
+  { code: "family-relationships", name: "Family & Relationships" },
+  { code: "daily-routines", name: "Daily Routines" },
+  { code: "shopping-money", name: "Shopping & Money" },
+  { code: "travel-transportation", name: "Travel & Transportation" },
+  { code: "weather-seasons", name: "Weather & Seasons" },
+  { code: "home-furniture", name: "Home & Furniture" },
+  { code: "clothing-fashion", name: "Clothing & Fashion" },
+  { code: "work-professions", name: "Work & Professions" },
+  { code: "health-body", name: "Health & Body Parts" },
+  { code: "hobbies-leisure", name: "Hobbies & Leisure Activities" },
+  { code: "technology-media", name: "Technology & Media" },
+  { code: "education-school", name: "Education & School" },
+  { code: "present-tense", name: "Present Tense Verbs" },
+  { code: "past-tense", name: "Past Tense Verbs" },
+  { code: "future-tense", name: "Future Tense Verbs" },
+  { code: "pronouns", name: "Pronouns" },
+  { code: "adjectives-adverbs", name: "Adjectives & Adverbs" },
+  { code: "prepositions", name: "Prepositions" },
+  { code: "conjunctions", name: "Conjunctions" },
+  { code: "questions-interrogatives", name: "Questions & Interrogatives" },
+  { code: "negation", name: "Negation & Negative Forms" },
+  { code: "emotions-feelings", name: "Emotions & Feelings" },
+  { code: "animals-nature", name: "Animals & Nature" },
+  { code: "colors-shapes", name: "Colors & Shapes" },
+  { code: "directions-locations", name: "Directions & Locations" },
+  { code: "restaurant-dining", name: "Restaurant & Dining Out" },
+  { code: "conditional-mood", name: "Conditional & Subjunctive Mood" },
 ];

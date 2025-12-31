@@ -285,7 +285,7 @@ const studySetId = route.params.studySetId as string;
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
-  layout: 'headerbar'
+  layout: 'user-layout'
 })
 
 // State
