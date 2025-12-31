@@ -1,45 +1,55 @@
 <template>
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h3>FlashLang</h3>
-        <p>Master languages through smart flashcards powered by AI</p>
+  <footer class="bg-gray-900 text-gray-300 px-4 pt-8 pb-4 mt-auto md:px-4 md:pt-8 md:pb-4">
+    <div class="max-w-screen-xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-6">
+      <div>
+        <h3 class="text-2xl font-semibold mb-2 text-white">FlashLang</h3>
+        <p class="text-gray-400 leading-relaxed">Master languages through smart flashcards powered by AI</p>
       </div>
 
-      <div class="footer-section">
-        <h4>Quick Links</h4>
-        <ul>
+      <div>
+        <h4 class="text-lg font-medium mb-3 text-white">Quick Links</h4>
+        <ul class="list-none p-0 m-0 space-y-2">
           <li>
-            <NuxtLink to="/">Home</NuxtLink>
+            <NuxtLink to="/" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Home
+            </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/user/dashboard">Dashboard</NuxtLink>
+            <NuxtLink to="/user/dashboard"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Dashboard</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/user/studysets/new">Create Study Set</NuxtLink>
+            <NuxtLink to="/user/studysets/new"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Create Study Set
+            </NuxtLink>
           </li>
         </ul>
       </div>
 
-      <div class="footer-section">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="#about">About</a></li>
-          <li><a href="#help">Help</a></li>
-          <li><a href="#privacy">Privacy Policy</a></li>
+      <div>
+        <h4 class="text-lg font-medium mb-3 text-white">Resources</h4>
+        <ul class="list-none p-0 m-0 space-y-2">
+          <li><a href="#about"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">About</a></li>
+          <li><a href="#help"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Help</a></li>
+          <li><a href="#privacy"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Privacy Policy</a>
+          </li>
         </ul>
       </div>
 
-      <div class="footer-section">
-        <h4>Connect</h4>
-        <ul>
-          <li><a href="#contact">Contact Us</a></li>
-          <li><a href="#feedback">Feedback</a></li>
+      <div>
+        <h4 class="text-lg font-medium mb-3 text-white">Connect</h4>
+        <ul class="list-none p-0 m-0 space-y-2">
+          <li><a href="#contact"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Contact Us</a></li>
+          <li><a href="#feedback"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Feedback</a></li>
         </ul>
       </div>
     </div>
 
-    <div class="footer-bottom">
+    <div class="max-w-screen-xl mx-auto pt-6 border-t border-gray-700 text-center text-gray-500 text-sm">
       <p>&copy; {{ currentYear }} FlashLang. All rights reserved.</p>
     </div>
   </footer>
@@ -48,79 +58,3 @@
 <script setup lang="ts">
 const currentYear = computed(() => new Date().getFullYear())
 </script>
-
-<style scoped>
-.footer {
-  background-color: #1a1a1a;
-  color: #e0e0e0;
-  padding: 2rem 1rem 1rem;
-  margin-top: auto;
-}
-
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
-  padding-bottom: 1.5rem;
-}
-
-.footer-section h3 {
-  font-size: 1.5rem;
-  margin-bottom: 0.5rem;
-  color: #ffffff;
-}
-
-.footer-section h4 {
-  font-size: 1.1rem;
-  margin-bottom: 0.75rem;
-  color: #ffffff;
-}
-
-.footer-section p {
-  color: #b0b0b0;
-  line-height: 1.5;
-}
-
-.footer-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.footer-section ul li {
-  margin-bottom: 0.5rem;
-}
-
-.footer-section a {
-  color: #b0b0b0;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.footer-section a:hover {
-  color: #4a9eff;
-}
-
-.footer-bottom {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding-top: 1.5rem;
-  border-top: 1px solid #333;
-  text-align: center;
-  color: #808080;
-  font-size: 0.9rem;
-}
-
-@media (max-width: 768px) {
-  .footer-content {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .footer {
-    padding: 1.5rem 1rem 0.75rem;
-  }
-}
-</style>
