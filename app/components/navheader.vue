@@ -55,7 +55,8 @@
       enter-from-class="transform translate-x-full" enter-to-class="transform translate-x-0"
       leave-active-class="transition-transform duration-300 ease-in" leave-from-class="transform translate-x-0"
       leave-to-class="transform translate-x-full">
-      <div v-if="isMenuOpen" class="fixed inset-y-0 right-0 w-64 bg-gray-800 shadow-2xl md:hidden top-[65px]">
+      <div v-if="isMenuOpen" class="fixed inset-y-0 right-0 w-64 bg-gray-800 shadow-2xl md:hidden top-[65px]"
+        data-test="mobile-nav">
         <div class="flex flex-col h-[500px] bg-gray-900">
           <!-- Mobile Menu Header -->
           <div class="p-4 border-b border-gray-700">
