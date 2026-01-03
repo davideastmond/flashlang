@@ -51,12 +51,16 @@
               <label for="firstName" class="block text-slate-300 text-sm font-medium mb-2">First Name</label>
               <input type="text" id="firstName" v-model="firstName" placeholder="John" required
                 class="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-white/8 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300" />
+              <p class="text-red-400 text-sm mt-1.5" v-if="validationErrors.firstName">{{ validationErrors.firstName }}
+              </p>
             </div>
 
             <div>
               <label for="lastName" class="block text-slate-300 text-sm font-medium mb-2">Last Name</label>
               <input type="text" id="lastName" v-model="lastName" placeholder="Doe" required
                 class="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-white/8 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300" />
+              <p class="text-red-400 text-sm mt-1.5" v-if="validationErrors.lastName">{{ validationErrors.lastName }}
+              </p>
             </div>
           </div>
 
@@ -159,8 +163,8 @@ const handleSignup = async () => {
   apiError.value = null;
   isBusy.value = true;
   const requestBody = {
-    firstName: firstName.value,
-    lastName: lastName.value,
+    firstName: firstName.value.trim(),
+    lastName: lastName.value.trim(),
     email: email.value,
     dateOfBirth: dateOfBirth.value,
     password1: password1.value,
@@ -175,7 +179,7 @@ const handleSignup = async () => {
         const field = issue.path[0] as keyof typeof validationErrors.value
         validationErrors.value[field] = issue.message
       })
-      return
+      return;
     }
   }
 

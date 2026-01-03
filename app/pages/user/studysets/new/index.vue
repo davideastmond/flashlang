@@ -198,6 +198,7 @@ import type { AIFormAttributes } from '~~/shared/types/definitions/ai-form-attri
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
 import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
+import { createStudyValidator } from '~~/shared/validators/create-study-set/create-study-set-validator';
 
 interface Errors {
   title?: string;
@@ -248,41 +249,24 @@ const removeCard = (index: number) => {
   flashCards.value.splice(index, 1);
 };
 
-// Validate form
-const validateForm = (): boolean => {
-  errors.value = {};
-
-  if (!studySet.value.title?.trim()) {
-    errors.value.title = 'Title is required';
-    return false;
-  }
-
-  if (!studySet.value.language?.trim()) {
-    errors.value.language = 'Language is required';
-    return false;
-  }
-
-  if (flashCards.value.length === 0) {
-    errors.value.flashCards = 'Add at least one flash card';
-    return false;
-  }
-
-  // Check if all cards have both question and answer
-  const incompleteCards = flashCards.value.some(
-    card => !card.question.trim() || !card.answer.trim()
-  );
-
-  if (incompleteCards) {
-    errors.value.flashCards = 'All flash cards must have both a question and an answer';
-    return false;
-  }
-
-  return true;
-};
-
 // Handle form submission
 const handleSubmit = async () => {
-  if (!validateForm()) {
+  try {
+    createStudyValidator.parse({
+      title: studySet.value.title?.trim(),
+      description: studySet.value.description?.trim(),
+      language: studySet.value.language,
+      flashCards: flashCards.value
+    })
+  } catch (error) {
+    //map the errors to the errors object
+    if (error instanceof Error && 'issues' in error) {
+      const zodError = error as any;
+      zodError.issues.forEach((issue: any) => {
+        const field: string = issue.path[0];
+        (errors.value as any)[field] = issue.message;
+      });
+    }
     return;
   }
 
@@ -298,7 +282,7 @@ const handleSubmit = async () => {
       studySet.value.language
     );
 
-    /* Upon the successful creation, we should get the studyset ID back. 
+    /* Upon the successful creation, we should get the studySet ID back. 
     We can then navigate to its view page where user can add more cards or study. */
     successMessage.value = 'Study set created successfully!';
 
