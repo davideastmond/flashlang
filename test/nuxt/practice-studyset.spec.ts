@@ -1084,4 +1084,276 @@ describe("PracticeStudySet Component", () => {
       }
     });
   });
+
+  describe("Special Characters Panel", () => {
+    it("renders the special characters panel", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      expect(wrapper.text()).toContain("Special Characters");
+    });
+
+    it("starts with panel collapsed by default", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Panel should exist but diacritic buttons should not be visible initially
+      const diacriticButtons = wrapper
+        .findAll("button")
+        .filter((btn) => btn.text().match(/^[áéíóúñüàèìòù]$/i));
+
+      expect(diacriticButtons.length).toBe(0);
+    });
+
+    it("expands panel when clicking the header", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Find and click the Special Characters toggle button
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      expect(toggleButton).toBeDefined();
+
+      if (toggleButton) {
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Now diacritic buttons should be visible
+        const diacriticButtons = wrapper
+          .findAll("button")
+          .filter((btn) => btn.text().match(/^[áéíóúñüàèìòù]$/i));
+
+        expect(diacriticButtons.length).toBeGreaterThan(0);
+      }
+    });
+
+    it("collapses panel when clicking header again", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      if (toggleButton) {
+        // Expand
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Collapse
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Buttons should be hidden again
+        const diacriticButtons = wrapper
+          .findAll("button")
+          .filter((btn) => btn.text().match(/^[áéíóúñüàèìòù]$/i));
+
+        expect(diacriticButtons.length).toBe(0);
+      }
+    });
+
+    it("displays lowercase diacritics by default", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Expand panel
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      if (toggleButton) {
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Check for lowercase characters
+        expect(wrapper.text()).toContain("á");
+        expect(wrapper.text()).toContain("é");
+        expect(wrapper.text()).toContain("ñ");
+      }
+    });
+
+    it("toggles between lowercase and uppercase diacritics", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Expand panel
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      if (toggleButton) {
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Find the ABC/abc toggle button
+        const caseToggle = wrapper
+          .findAll("button")
+          .find((btn) => btn.text() === "abc");
+
+        expect(caseToggle).toBeDefined();
+
+        if (caseToggle) {
+          await caseToggle.trigger("click");
+          await wrapper.vm.$nextTick();
+
+          // Should now show uppercase
+          expect(wrapper.text()).toContain("Á");
+          expect(wrapper.text()).toContain("É");
+          expect(wrapper.text()).toContain("Ñ");
+        }
+      }
+    });
+
+    it("inserts diacritic character into answer field when clicked", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Expand panel
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      if (toggleButton) {
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Find a diacritic button (e.g., 'á')
+        const diacriticButton = wrapper
+          .findAll("button")
+          .find((btn) => btn.text() === "á");
+
+        expect(diacriticButton).toBeDefined();
+
+        if (diacriticButton) {
+          const answerInput = wrapper.find('input[type="text"]');
+
+          // Set initial value
+          await answerInput.setValue("Hol");
+
+          // Click the diacritic button
+          await diacriticButton.trigger("click");
+          await wrapper.vm.$nextTick();
+
+          // Check if the character was added
+          expect((answerInput.element as HTMLInputElement).value).toBe("Holá");
+        }
+      }
+    });
+
+    it("displays chevron icon that rotates when panel is toggled", async () => {
+      const wrapper = await mountSuspended(PracticeStudySet, {
+        global: {
+          stubs: {
+            NuxtLink: {
+              template: '<a :to="to"><slot /></a>',
+              props: ["to"],
+            },
+          },
+        },
+      });
+
+      await wrapper.vm.$nextTick();
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Find the toggle button's SVG
+      const toggleButton = wrapper
+        .findAll("button")
+        .find((btn) => btn.text().includes("Special Characters"));
+
+      if (toggleButton) {
+        const svg = toggleButton.find("svg");
+        expect(svg.exists()).toBe(true);
+
+        // Initially should not have rotate-180 class
+        expect(svg.classes()).not.toContain("rotate-180");
+
+        // Click to expand
+        await toggleButton.trigger("click");
+        await wrapper.vm.$nextTick();
+
+        // Should now have rotate-180 class
+        expect(svg.classes()).toContain("rotate-180");
+      }
+    });
+  });
 });
