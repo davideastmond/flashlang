@@ -897,7 +897,7 @@ describe("NewStudySet Component", () => {
     });
 
     // Check for key styling classes
-    expect(wrapper.html()).toContain("bg-gray-901");
+    expect(wrapper.html()).toContain("bg-gray-900");
     expect(wrapper.html()).toContain("rounded-lg");
     expect(wrapper.html()).toContain("border-gray-700");
   });
