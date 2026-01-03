@@ -40,9 +40,36 @@
       <!-- Answer Input -->
       <div v-if="!showResults" class="mb-6">
         <label class="block text-sm font-medium text-gray-300 mb-2">Your Answer:</label>
-        <input v-model="userAnswer" type="text" placeholder="Type your answer here..."
+        <input v-model="userAnswer" type="text" placeholder="Type your answer here..." ref="answerInput"
           class="w-full px-4 py-3 bg-gray-800/60 backdrop-blur-sm border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           @keydown.enter="flipCard" />
+
+        <!-- Diacritics Panel -->
+        <div class="mt-3 bg-gray-800/40 backdrop-blur-sm rounded-lg border border-gray-700">
+          <button @click="showDiacriticsPanel = !showDiacriticsPanel"
+            class="w-full px-3 py-2 flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wide hover:bg-gray-700/50 transition-colors rounded-t-lg">
+            <span>Special Characters</span>
+            <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': showDiacriticsPanel }" fill="none"
+              stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div v-if="showDiacriticsPanel" class="p-3 pt-2">
+            <div class="flex items-center justify-end mb-2">
+              <button @click="toggleDiacriticsCase"
+                class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 text-gray-300 rounded transition-colors">
+                {{ showUpperCaseDiacritics ? 'ABC' : 'abc' }}
+              </button>
+            </div>
+            <div class="flex flex-wrap gap-1">
+              <button v-for="char in currentDiacritics" :key="char" @click="insertDiacritic(char)"
+                class="px-3 py-2 bg-gray-700 hover:bg-indigo-600 text-white rounded transition-colors text-sm font-medium min-w-[2.5rem]">
+                {{ char }}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Answer Check Result -->
         <div v-if="cardResults[currentIndex]?.checked" class="mt-3 p-3 rounded-lg" :class="[
           cardResults[currentIndex]?.isCorrect
@@ -315,6 +342,30 @@ const showResults = ref(false);
 
 const isAiProcessing = ref(false);
 
+// Diacritics panel state
+const showDiacriticsPanel = ref(false);
+const showUpperCaseDiacritics = ref(false);
+const answerInput = ref<HTMLInputElement | null>(null);
+
+// Common diacritics for various languages
+const DIACRITICS_LOWER = [
+  'á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', // Spanish
+  'à', 'è', 'ì', 'ò', 'ù', // Italian/French
+  'â', 'ê', 'î', 'ô', 'û', // French
+  'ä', 'ö', // German
+  'ç', // French/Portuguese
+  'ã', 'õ', // Portuguese
+];
+
+const DIACRITICS_UPPER = [
+  'Á', 'É', 'Í', 'Ó', 'Ú', 'Ñ', 'Ü', // Spanish
+  'À', 'È', 'Ì', 'Ò', 'Ù', // Italian/French
+  'Â', 'Ê', 'Î', 'Ô', 'Û', // French
+  'Ä', 'Ö', // German
+  'Ç', // French/Portuguese
+  'Ã', 'Õ', // Portuguese
+];
+
 // Utility function to shuffle array
 const shuffleArray = <T>(array: T[]): T[] => {
   const shuffled = [...array];
@@ -354,6 +405,24 @@ const sessionScore = computed(() => {
     duration
   };
 });
+
+// Computed property for current diacritics based on case toggle
+const currentDiacritics = computed(() => {
+  return showUpperCaseDiacritics.value ? DIACRITICS_UPPER : DIACRITICS_LOWER;
+});
+
+// Diacritics functions
+const toggleDiacriticsCase = () => {
+  showUpperCaseDiacritics.value = !showUpperCaseDiacritics.value;
+};
+
+const insertDiacritic = (char: string) => {
+  userAnswer.value += char;
+  // Focus back on the input field
+  nextTick(() => {
+    answerInput.value?.focus();
+  });
+};
 
 // Fetch study set data
 const fetchStudySet = async () => {
