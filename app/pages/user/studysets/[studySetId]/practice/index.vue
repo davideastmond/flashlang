@@ -307,6 +307,7 @@
 
 import type { FlashCard } from "~~/shared/types/definitions/flash-card";
 import type { StudySet } from "~~/shared/types/definitions/study-set";
+import { removeDiacritics } from "~~/shared/utils/remove-diacritics";
 
 const route = useRoute();
 const studySetId = route.params.studySetId as string;
@@ -503,8 +504,8 @@ const checkAnswer = async () => {
   const currentResult = cardResults.value[currentIndex.value];
   if (!currentResult || currentResult.checked) return;
 
-  const correctAnswer = currentCard.value?.answer?.toLowerCase().trim() || '';
-  const providedAnswer = (userAnswer.value || transcript.value).toLowerCase().trim();
+  const correctAnswer = removeDiacritics(currentCard.value?.answer?.toLowerCase().trim() || '');
+  const providedAnswer = removeDiacritics((userAnswer.value || transcript.value).toLowerCase().trim());
 
   // Simple exact match check (can be enhanced with fuzzy matching later)
   let isCorrect = correctAnswer === providedAnswer || providedAnswer.includes(correctAnswer);
