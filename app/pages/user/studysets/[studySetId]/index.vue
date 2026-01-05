@@ -208,6 +208,7 @@
 
             <div class="flex space-x-3 pt-4">
               <button type="submit" :disabled="isAddingCard || !newCard.question || !newCard.answer"
+                data-test="add-card-modal"
                 class="flex-1 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white rounded-lg transition-colors font-medium">
                 {{ isAddingCard ? 'Adding...' : 'Add Card' }}
               </button>
@@ -418,7 +419,8 @@ const closeAddCardModal = () => {
 };
 
 const addCard = async () => {
-  if (!newCard.value.question.trim() || !newCard.value.answer.trim()) return;
+  const emptyForm = !newCard.value.question.trim() || !newCard.value.answer.trim();
+  if (emptyForm) return;
 
   try {
     isAddingCard.value = true;
