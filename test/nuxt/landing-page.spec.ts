@@ -4,7 +4,7 @@ import Index from "~/pages/index.vue";
 
 // Mock useAuth composable with a mutable status object
 const authStatus = { value: "unauthenticated" };
-const authData = { value: null };
+const authData: { value: null | Record<string, any> } = { value: null };
 
 mockNuxtImport("useAuth", () => {
   return () => ({
