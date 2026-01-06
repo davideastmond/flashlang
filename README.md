@@ -116,4 +116,20 @@ npm run test
 
 ## Screenshots
 
-Forthcoming...
+### Landing Page
+
+![FlashLang Landing Page](/screenshots/01-landing-page.png)
+
+The landing page showcases FlashLang's main features including AI-powered flashcards, multi-language support, and lightning-fast learning capabilities.
+
+### Login Page
+
+![FlashLang Login Page](/screenshots/02-login-page.png)
+
+Users can sign in to access their personalized flashcard decks and continue their learning journey.
+
+### Sign Up Page
+
+![FlashLang Sign Up Page](/screenshots/03-signup-page.png)
+
+New users can create an account with email or Google authentication to start building their language learning experience.
