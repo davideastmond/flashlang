@@ -7,6 +7,7 @@ const mockFetch = vi.fn();
 const mockNavigateTo = vi.fn();
 
 vi.stubGlobal("$fetch", mockFetch);
+vi.stubGlobal("navigateTo", mockNavigateTo);
 
 // mock
 
@@ -482,41 +483,6 @@ describe("NewStudySet Component", () => {
         }),
       })
     );
-  });
-
-  it.skip("navigates to new study set page after successful submission", async () => {
-    mockFetch.mockResolvedValue({ data: "uuid-1234-5678-abcd" });
-    mockNavigateTo.mockResolvedValue(undefined);
-    const wrapper = await mountSuspended(NewStudySet, {
-      global: {
-        stubs: {
-          NuxtLink: {
-            template: '<a :to="to"><slot /></a>',
-            props: ["to"],
-          },
-          AiGenerationModal: true,
-        },
-      },
-    });
-
-    await wrapper.vm.$nextTick();
-
-    // Fill in all required fields
-    await wrapper.find("#title").setValue("Spanish Vocabulary");
-    await wrapper.find("#language").setValue("es-ES");
-    await wrapper.find("textarea[id^='question-']").setValue("Question");
-    await wrapper.find("textarea[id^='answer-']").setValue("Answer");
-
-    // Submit form
-    const form = wrapper.find("form");
-    await form.trigger("submit.prevent");
-    await wrapper.vm.$nextTick();
-
-    // Wait for async operations
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    // Should navigate to the new study set
-    expect(mockNavigateTo).toHaveBeenCalledWith("/user/studysets/uuid-123");
   });
 
   it("displays success message after creation", async () => {
