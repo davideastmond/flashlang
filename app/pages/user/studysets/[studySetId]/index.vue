@@ -268,6 +268,7 @@
               {{ isDeletingStudySet ? 'Deleting...' : 'Delete Study Set' }}
             </button>
             <button @click="showDeleteStudySetModal = false" :disabled="isDeletingStudySet"
+              data-test="delete-study-set-modal-cancel"
               class="px-6 py-3 bg-gray-700 hover:bg-gray-600 disabled:opacity-50 text-white rounded-lg transition-colors">
               Cancel
             </button>
@@ -400,7 +401,6 @@ const confirmDeleteStudySet = async () => {
     await $fetch(`/api/studysets/${studySetFullId}`, {
       method: "DELETE",
     });
-
     // Upon successful delete, redirect to dashboard
     await navigateTo("/user/dashboard");
   } catch (error) {

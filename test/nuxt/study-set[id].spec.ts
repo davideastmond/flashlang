@@ -1038,10 +1038,6 @@ describe("StudySetDetail Component", () => {
             "[data-test='delete-study-set-modal-cancel']"
           );
 
-          // const modalCancelButton = cancelButtons.find(
-          //   (btn) => btn.text() === "Cancel"
-          // );
-
           if (modalCancelButton) {
             await modalCancelButton.trigger("click");
             await wrapper.vm.$nextTick();
