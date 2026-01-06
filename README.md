@@ -132,16 +132,4 @@ Users can sign in to access their personalized flashcard decks and continue thei
 
 ![FlashLang Sign Up Page](public/screenshots/03-signup-page.png)
 
-New users can create an account with email or Google authentication to start building their language learning experience.
-
-### Dashboard
-
-![FlashLang Dashboard](public/screenshots/04-dashboard.png)
-
-The dashboard provides quick access to create new study sets, browse existing sets, and track learning progress with statistics on study sets, sessions, flashcards, and study streaks.
-
-### Practice Session
-
-![FlashLang Practice Session](public/screenshots/05-practice-session.png)
-
-The practice session screen allows users to actively learn with flashcards, featuring answer input, diacritics helper for special characters, voice input support, and real-time progress tracking.
+New users can create an account with email credentials to start building their language learning experience.
