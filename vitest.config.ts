@@ -16,6 +16,7 @@ export default defineConfig({
           alias: {
             "~~/shared": r("./shared"),
             "~": r("./server"),
+            "~~/db": r("./db"),
           },
         },
       },
