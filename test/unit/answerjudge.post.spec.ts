@@ -16,7 +16,7 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
   it("is registered as an event handler", () => {
     expect(defineEventHandler).toHaveBeenCalled();
   });
-  it("returns a success response with isCorrect true for a correct answer", async () => {
+  it("returns a success response", async () => {
     mockImplementationFunc.mockResolvedValue({});
     const event = await import("../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
