@@ -1,6 +1,7 @@
 // Add a new flash card to a study set
 import { getServerSession } from "#auth";
 import { and, eq } from "drizzle-orm";
+import { getRouterParam } from "h3";
 import z from "zod";
 import { db } from "~~/db";
 import { flashCards, studySetFlashCards, studySets } from "~~/db/schema";
