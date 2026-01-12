@@ -20,7 +20,7 @@ export function useH3TestUtils() {
     ),
   }));
 
-  // Stub the global functions to support auto-imports in your tests
+  // Stub the global functions to support auto-imports in the tests
   vi.stubGlobal("defineEventHandler", h3.defineEventHandler);
   vi.stubGlobal("readBody", h3.readBody);
   vi.stubGlobal("getRouterParams", h3.getRouterParams);
