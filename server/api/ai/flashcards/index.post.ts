@@ -2,6 +2,7 @@
 // post request parameters: topic (string) - the topic for which to generate flashcards
 // number of flashcards to generate (default 5)
 
+import z from "zod";
 import { AIGenerateFlashcardsPostRequestBody } from "~~/shared/types/api/ai-generate-flashcards/definitions";
 import {
   createFlashCardAIFormatResponseValidator,
@@ -31,14 +32,18 @@ export default defineEventHandler(async (event) => {
 
   try {
     const response = await generateGeminiResponse(prompt);
-
     try {
-      createFlashCardAIFormatResponseValidator.parse(response);
+      createFlashCardAIFormatResponseValidator.parse(
+        JSON.parse(response as any)
+      );
     } catch (error) {
-      return createError({
-        statusCode: 500,
-        statusMessage: "Invalid AI response format.",
-      });
+      if (error instanceof z.ZodError) {
+        return createError({
+          statusCode: 500,
+          statusMessage:
+            "Invalid AI response format." + JSON.stringify(error.issues),
+        });
+      }
     }
     return {
       success: true,
