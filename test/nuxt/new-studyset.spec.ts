@@ -283,8 +283,8 @@ describe("NewStudySet Component", () => {
     const languageSelect = wrapper.find("#language");
     const options = languageSelect.findAll("option");
 
-    // Should have placeholder + 8 languages
-    expect(options.length).toBe(9);
+    // Should have placeholder + 10 languages
+    expect(options.length).toBe(10);
     expect(wrapper.text()).toContain("English (US)");
     expect(wrapper.text()).toContain("Spanish");
     expect(wrapper.text()).toContain("French");

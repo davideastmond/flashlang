@@ -7,6 +7,7 @@ export const SUPPORTED_LANGUAGES = [
   { code: "de-DE", name: "German" },
   { code: "pt-PT", name: "Portuguese (Portugal)" },
   { code: "pt-BR", name: "Portuguese (Brazil)" },
+  { code: "tl-PH", name: "Tagalog" },
 ];
 
 export const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];

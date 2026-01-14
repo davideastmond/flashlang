@@ -229,11 +229,7 @@ const stats = ref<{
   recentSessions: [],
 });
 
-
-// Fetch user data on mount
-onMounted(async () => {
-  await fetchUserData();
-});
+await useAsyncData(() => fetchUserData());
 
 // Fetch user data
 async function fetchUserData() {
