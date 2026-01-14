@@ -1,6 +1,7 @@
 // Delete a flash card from a study set
 import { getServerSession } from "#auth";
 import { and, eq } from "drizzle-orm";
+import { getRouterParam } from "h3";
 import { db } from "~~/db";
 import { flashCards, studySetFlashCards, studySets } from "~~/db/schema";
 

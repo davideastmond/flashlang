@@ -36,19 +36,22 @@
         <div class="feature-card">
           <div class="feature-icon">🧠</div>
           <h3>AI-Powered</h3>
-          <p>Smart algorithms adapt to your learning style and optimize retention</p>
+          <p>Automated flashcard creation and personalized learning paths</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon">🌍</div>
           <h3>Multi-Language</h3>
-          <p>Support for dozens of languages with native speaker pronunciations</p>
+          <p>Support for {{ SUPPORTED_LANGUAGES_COUNT }} languages with native speaker pronunciations</p>
         </div>
       </section>
     </div>
   </div>
 </template>
 <script setup lang="ts">
+import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
+
 const { status } = useAuth();
+const SUPPORTED_LANGUAGES_COUNT = SUPPORTED_LANGUAGES.length
 </script>
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');

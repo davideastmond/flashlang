@@ -2,10 +2,24 @@
 // post request parameters: topic (string) - the topic for which to generate flashcards
 // number of flashcards to generate (default 5)
 
+import z from "zod";
 import { AIGenerateFlashcardsPostRequestBody } from "~~/shared/types/api/ai-generate-flashcards/definitions";
-
+import {
+  createFlashCardAIFormatResponseValidator,
+  createFlashCardBodyValidator,
+} from "~~/shared/validators/create-flashcard-body-validator/create-flashcard-body-validator";
+import { generateGeminiResponse } from "../../../utils/gemini/gemini-client";
 export default defineEventHandler(async (event) => {
   const body = await readBody<AIGenerateFlashcardsPostRequestBody>(event);
+
+  try {
+    createFlashCardBodyValidator.parse(body);
+  } catch (error) {
+    return createError({
+      statusCode: 400,
+      statusMessage: "Validation error.",
+    });
+  }
   const { topic, language = "en-US", flashCardCount = 5, cefrLanguage } = body;
 
   const prompt = `Generate a set of ${flashCardCount} flashcards on ${topic} where user is learning ${cefrLanguage}. 
@@ -16,10 +30,30 @@ export default defineEventHandler(async (event) => {
     The answers should be concise and be able to be answered as one word or a short phrase with no extra parentheses or punctuation.
     The topic of the input should be centered on educational content. Nonsensical or non-educational topics should be returned as an empty array.`;
 
-  const response = await generateGeminiResponse(prompt);
-
-  return {
-    success: true,
-    flashcards: response,
-  };
+  try {
+    const response = await generateGeminiResponse(prompt);
+    try {
+      createFlashCardAIFormatResponseValidator.parse(
+        JSON.parse(response as any)
+      );
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return createError({
+          statusCode: 500,
+          statusMessage:
+            "Invalid AI response format." + JSON.stringify(error.issues),
+        });
+      }
+    }
+    return {
+      success: true,
+      flashcards: response,
+    };
+  } catch (error) {
+    return createError({
+      statusCode: 500,
+      statusMessage:
+        "Failed to generate flashcards." + (error as Error).message,
+    });
+  }
 });
