@@ -53,7 +53,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Total Study Sets</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySets }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalStudySets }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Total Study Sessions</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySessions }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalStudySessions }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Flash Cards</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalCards }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalCards }}</p>
               </div>
               <div class="p-3 bg-green-500/20 rounded-full">
                 <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Study Streak</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.studyStreak }} days</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.studyStreak }} days</p>
               </div>
               <div class="p-3 bg-yellow-500/20 rounded-full">
                 <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Accuracy</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.accuracy }}%</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.accuracy }}%</p>
               </div>
               <div class="p-3 bg-purple-500/20 rounded-full">
                 <svg class="h-6 w-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
       <div>
         <h2 class="text-xl font-semibold text-white mb-4">Recent History</h2>
         <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border border-gray-700">
-          <div v-if="stats.recentSessions.length === 0" class="p-8 text-center">
+          <div v-if="stats?.recentSessions.length === 0" class="p-8 text-center">
             <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -148,7 +148,7 @@
           </div>
 
           <ul v-else class="divide-y divide-gray-700">
-            <li v-for="session in stats.recentSessions" :key="session.id"
+            <li v-for="session in stats?.recentSessions" :key="session.id"
               class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors"
               @click="handleOpenSession(session.id)">
               <div class="flex items-center justify-between">
@@ -205,8 +205,7 @@ definePageMeta({
   layout: 'user-layout'
 });
 
-// Stats
-const stats = ref<{
+type StatsType = {
   totalStudySets: number;
   totalStudySessions: number;
   totalCards: number;
@@ -220,30 +219,9 @@ const stats = ref<{
     correctCount: number;
   }>;
 }
->({
-  totalStudySets: 0,
-  totalStudySessions: 0,
-  totalCards: 0,
-  studyStreak: 0,
-  accuracy: 0,
-  recentSessions: [],
-});
 
-await useAsyncData(() => fetchUserData());
 
-// Fetch user data
-async function fetchUserData() {
-  try {
-    const { data } = await $fetch('/api/user/profile/stats');
-
-    stats.value = {
-      ...data as typeof stats.value,
-    };
-
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
-}
+const { data: stats } = await useFetch<StatsType>('/api/user/profile/stats');
 
 // Handle create session
 async function handleCreateSession() {
