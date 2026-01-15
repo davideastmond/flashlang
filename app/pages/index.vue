@@ -23,7 +23,9 @@
           <NuxtLink v-else to="/user/dashboard">
             <button class="btn btn-primary">Go to Dashboard</button>
           </NuxtLink>
-          <button class="btn btn-secondary">Watch Demo</button>
+          <NuxtLink to="/demo">
+            <button class="btn btn-secondary">Watch Demo</button>
+          </NuxtLink>
         </div>
       </main>
 
