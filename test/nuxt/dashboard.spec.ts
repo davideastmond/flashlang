@@ -21,14 +21,12 @@ describe("Dashboard Component", () => {
     vi.clearAllMocks();
     // Set default mock response for $fetch
     fetchMock.mockResolvedValue({
-      data: {
-        totalStudySets: 0,
-        totalStudySessions: 0,
-        totalCards: 0,
-        studyStreak: 0,
-        accuracy: 0,
-        recentSessions: [],
-      },
+      totalStudySets: 0,
+      totalStudySessions: 0,
+      totalCards: 0,
+      studyStreak: 0,
+      accuracy: 0,
+      recentSessions: [],
     });
   });
 

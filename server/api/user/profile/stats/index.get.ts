@@ -46,19 +46,31 @@ export default defineEventHandler(async (event) => {
       .orderBy(desc(studySessions.startTime))
       .limit(3);
 
+    // return {
+    //   data: {
+    //     totalStudySets: totalStudySets[0]?.value || 0,
+    //     totalCards: totalCards[0]?.value || 0,
+    //     studyStreak: calculateStudyStreakDays(
+    //       studySessionData as Partial<StudySessionData>[]
+    //     ),
+    //     accuracy: calculateAccuracy(
+    //       studySessionData as Partial<StudySessionData>[]
+    //     ),
+    //     totalStudySessions: studySessionData.length,
+    //     recentSessions: namedListOfStudySessions,
+    //   },
+    // };
     return {
-      data: {
-        totalStudySets: totalStudySets[0]?.value || 0,
-        totalCards: totalCards[0]?.value || 0,
-        studyStreak: calculateStudyStreakDays(
-          studySessionData as Partial<StudySessionData>[]
-        ),
-        accuracy: calculateAccuracy(
-          studySessionData as Partial<StudySessionData>[]
-        ),
-        totalStudySessions: studySessionData.length,
-        recentSessions: namedListOfStudySessions,
-      },
+      totalStudySets: totalStudySets[0]?.value || 0,
+      totalCards: totalCards[0]?.value || 0,
+      studyStreak: calculateStudyStreakDays(
+        studySessionData as Partial<StudySessionData>[]
+      ),
+      accuracy: calculateAccuracy(
+        studySessionData as Partial<StudySessionData>[]
+      ),
+      totalStudySessions: studySessionData.length,
+      recentSessions: namedListOfStudySessions,
     };
   } catch (error) {
     return createError({
