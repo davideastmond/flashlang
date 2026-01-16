@@ -314,7 +314,7 @@ const handleAiGenerate = async (attributes: AIFormAttributes) => {
   const concatTitleDescription = `${attributes.cefrLanguage} ${attributes.languageArea} at the ${attributes.cefrLevel} level`
   try {
     // Call the AI API to generate flashcards as a stringified JSON array
-    const response = await $fetch('/api/ai/flashcards', {
+    const response = await $fetch<{ success: boolean; flashcards: string }>('/api/ai/flashcards', {
       method: 'POST',
       body: {
         language: attributes.language,

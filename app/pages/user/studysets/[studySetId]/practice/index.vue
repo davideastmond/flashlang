@@ -130,8 +130,19 @@
 
       <!-- Controls -->
       <div v-if="!showResults" class="flex flex-col space-y-4">
-        <!-- Flip Card and Speak Answer buttons - Full width on mobile, side by side on tablet+ -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <!-- Flip Card, Speak Question, and Speak Answer buttons -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <button @click="speakQuestion" :disabled="isAiProcessing || isSpeaking" :class="[
+            'w-full px-6 py-3 rounded-lg transition-colors font-medium inline-flex items-center justify-center disabled:bg-gray-800 disabled:opacity-50',
+            isSpeaking ? 'bg-purple-600 text-white' : 'bg-purple-600 hover:bg-purple-700 text-white'
+          ]">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            </svg>
+            {{ isSpeaking ? 'Speaking...' : 'Read Question' }}
+          </button>
+
           <button @click="isFlipped = !isFlipped" :disabled="isAiProcessing"
             class="w-full px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors font-medium disabled:bg-gray-800 disabled:opacity-50 inline-flex items-center justify-center">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,6 +164,18 @@
             </svg>
             {{ isRecording ? 'Stop Recording' : 'Speak Answer' }}
           </button>
+        </div>
+
+        <!-- Auto-speak toggle -->
+        <div
+          class="flex items-center justify-center space-x-3 p-3 bg-gray-800/40 backdrop-blur-sm rounded-lg border border-gray-700">
+          <label class="flex items-center cursor-pointer">
+            <input type="checkbox" v-model="autoSpeak" class="sr-only peer">
+            <div
+              class="relative w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600">
+            </div>
+            <span class="ml-3 text-sm font-medium text-gray-300">Auto-read questions</span>
+          </label>
         </div>
 
         <!-- Navigation buttons - Full width on mobile, side by side on tablet+ -->
@@ -330,6 +353,11 @@ const transcript = ref<string>('');
 const recognitionError = ref<string>('');
 let recognition: any = null;
 
+// Text-to-Speech state
+const isSpeaking = ref(false);
+const autoSpeak = ref(true);
+let speechSynthesis: SpeechSynthesis | null = null;
+
 // Practice session tracking
 const userAnswer = ref<string>('');
 const cardResults = ref<Array<{
@@ -452,6 +480,13 @@ const fetchStudySet = async () => {
 
       // Start session timer
       sessionStartTime.value = new Date();
+
+      // Speak first question if auto-speak is enabled
+      if (autoSpeak.value && flashCards.value.length > 0) {
+        setTimeout(() => {
+          speakQuestion();
+        }, 500);
+      }
     }
   } catch (err: any) {
     console.error("Error fetching study set:", err);
@@ -549,6 +584,60 @@ const checkAnswerUsingAI = async (question: string, correctAnswer: string, userA
   return false;
 };
 // Speech Recognition
+// Text-to-Speech Functions
+const initSpeechSynthesis = () => {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    speechSynthesis = window.speechSynthesis;
+    return true;
+  }
+  return false;
+};
+
+const speakQuestion = () => {
+  if (!currentCard.value?.question) return;
+
+  // Stop any ongoing speech
+  stopSpeaking();
+
+  if (!speechSynthesis && !initSpeechSynthesis()) {
+    console.error('Speech synthesis not supported');
+    return;
+  }
+
+  const utterance = new SpeechSynthesisUtterance(currentCard.value.question);
+
+  // Set language based on study set language
+  if (studySet.value?.language) {
+    utterance.lang = studySet.value.language;
+  }
+
+  utterance.rate = 0.9; // Slightly slower for better comprehension
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  utterance.onstart = () => {
+    isSpeaking.value = true;
+  };
+
+  utterance.onend = () => {
+    isSpeaking.value = false;
+  };
+
+  utterance.onerror = (event) => {
+    console.error('Speech synthesis error:', event);
+    isSpeaking.value = false;
+  };
+
+  speechSynthesis?.speak(utterance);
+};
+
+const stopSpeaking = () => {
+  if (speechSynthesis) {
+    speechSynthesis.cancel();
+    isSpeaking.value = false;
+  }
+};
+
 const initSpeechRecognition = () => {
   if (typeof window !== 'undefined') {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -636,6 +725,7 @@ const toggleSpeechRecognition = async () => {
 const finishSession = async () => {
   sessionEndTime.value = new Date();
   showResults.value = true;
+  stopSpeaking(); // Stop any ongoing speech
 
   // Submit session data to API (placeholder)
   await submitSessionData();
@@ -648,6 +738,7 @@ const resetSession = () => {
   transcript.value = '';
   recognitionError.value = '';
   showResults.value = false;
+  stopSpeaking(); // Stop any ongoing speech
 
   // Reset card results
   cardResults.value = flashCards.value.map(card => ({
@@ -700,11 +791,20 @@ const voiceRecognitionEndedCallback = () => {
 
 // Watch for card changes to reset transcript and user input
 watch(currentIndex, () => {
+  stopSpeaking(); // Stop any ongoing speech from previous card
   userAnswer.value = '';
   transcript.value = '';
   recognitionError.value = '';
   if (isRecording.value && recognition) {
     recognition.stop();
+  }
+
+  // Auto-speak if enabled
+  if (autoSpeak.value && !showResults.value) {
+    // Small delay to ensure card is visible
+    setTimeout(() => {
+      speakQuestion();
+    }, 300);
   }
 });
 
@@ -729,6 +829,7 @@ onMounted(() => {
   fetchStudySet();
   window.addEventListener('keydown', handleKeyPress);
   initSpeechRecognition();
+  initSpeechSynthesis();
 });
 
 onUnmounted(() => {
@@ -736,6 +837,7 @@ onUnmounted(() => {
   if (recognition) {
     recognition.abort();
   }
+  stopSpeaking();
 });
 </script>
 
