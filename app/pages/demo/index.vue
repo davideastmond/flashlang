@@ -69,10 +69,10 @@
             'Custom study sets'
           ]" />
 
-        <DemoFeatureShowcase icon-type="voice" icon-color="green" title="Voice Recognition"
+        <DemoFeatureShowcase icon-type="voice" icon-color="green" title="Voice Recognition & Speech Synthesis"
           description="Practice pronunciation with Web Speech API integration for real-time feedback." :features="[
             'Speech-to-text answers',
-            'Pronunciation practice',
+            'Speech synthesis playback',
             'Hands-free learning',
             'Real-time feedback'
           ]" />
