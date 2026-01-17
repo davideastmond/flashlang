@@ -650,7 +650,7 @@ describe("NewStudySet Component", () => {
     const cancelLink = wrapper.find(".cancel-link");
     expect(cancelLink.exists()).toBe(true);
     expect(cancelLink.text()).toContain("Cancel");
-    expect(cancelLink.attributes("to")).toBe("/studysets/view");
+    expect(cancelLink.attributes("to")).toBe("/user/studysets/view");
   });
 
   it("displays card numbers correctly for multiple cards", async () => {

@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
       .where(eq(studySets.userId, serverSession.user.id as string))
       .innerJoin(
         studySetFlashCards,
-        eq(studySets.id, studySetFlashCards.studySetId)
+        eq(studySets.id, studySetFlashCards.studySetId),
       );
 
     const namedListOfStudySessions = await db
@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
         startTime: studySessions.startTime,
         totalCount: studySessions.totalCount,
         correctCount: studySessions.correctCount,
+        studySetId: studySets.id,
       })
       .from(studySessions)
       .where(eq(studySessions.userId, serverSession.user.id as string))
@@ -47,18 +48,16 @@ export default defineEventHandler(async (event) => {
       .limit(3);
 
     return {
-      data: {
-        totalStudySets: totalStudySets[0]?.value || 0,
-        totalCards: totalCards[0]?.value || 0,
-        studyStreak: calculateStudyStreakDays(
-          studySessionData as Partial<StudySessionData>[]
-        ),
-        accuracy: calculateAccuracy(
-          studySessionData as Partial<StudySessionData>[]
-        ),
-        totalStudySessions: studySessionData.length,
-        recentSessions: namedListOfStudySessions,
-      },
+      totalStudySets: totalStudySets[0]?.value || 0,
+      totalCards: totalCards[0]?.value || 0,
+      studyStreak: calculateStudyStreakDays(
+        studySessionData as Partial<StudySessionData>[],
+      ),
+      accuracy: calculateAccuracy(
+        studySessionData as Partial<StudySessionData>[],
+      ),
+      totalStudySessions: studySessionData.length,
+      recentSessions: namedListOfStudySessions,
     };
   } catch (error) {
     return createError({
@@ -69,7 +68,7 @@ export default defineEventHandler(async (event) => {
 });
 
 function calculateAccuracy(
-  studySessionData: Partial<StudySessionData>[]
+  studySessionData: Partial<StudySessionData>[],
 ): number {
   // Loop through and calculate average accuracy
   let totalCorrect = 0;
@@ -86,7 +85,7 @@ function calculateAccuracy(
 }
 
 function calculateStudyStreakDays(
-  studySessionData: Partial<StudySessionData>[]
+  studySessionData: Partial<StudySessionData>[],
 ): number {
   if (!studySessionData || studySessionData.length === 0) {
     return 0;
@@ -102,10 +101,10 @@ function calculateStudyStreakDays(
           return new Date(
             date.getFullYear(),
             date.getMonth(),
-            date.getDate()
+            date.getDate(),
           ).getTime();
-        })
-    )
+        }),
+    ),
   ).sort((a, b) => b - a); // Sort descending (most recent first)
 
   if (uniqueDates.length === 0) {
@@ -116,7 +115,7 @@ function calculateStudyStreakDays(
   const todayMidnight = new Date(
     today.getFullYear(),
     today.getMonth(),
-    today.getDate()
+    today.getDate(),
   ).getTime();
   const yesterdayMidnight = todayMidnight - 24 * 60 * 60 * 1000;
 

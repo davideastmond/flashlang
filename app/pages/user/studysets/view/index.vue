@@ -120,7 +120,6 @@ definePageMeta({
   middleware: ['sidebase-auth'],
   layout: 'user-layout'
 });
-// Protect with authentication
 
 // Pagination state
 const currentPage = ref(1);
