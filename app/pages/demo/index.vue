@@ -101,25 +101,10 @@
         <h2 class="text-4xl font-bold text-white mb-4">Example Study Sets</h2>
         <p class="text-gray-400 text-lg">See what you can create with FlashLang</p>
       </div>
-
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DemoStudySetPreview title="Spanish Basics" description="Essential Spanish vocabulary for beginners"
-          language="Spanish" :card-count="25" cefr-level="A1" :completion-rate="80" :show-actions="false" />
-
-        <DemoStudySetPreview title="French Greetings" description="Common greetings and introductions in French"
-          language="French" :card-count="15" cefr-level="A1" :completion-rate="100" :show-actions="false" />
-
-        <DemoStudySetPreview title="German Business Terms" description="Professional vocabulary for business German"
-          language="German" :card-count="40" cefr-level="B2" :completion-rate="45" :show-actions="false" />
-
-        <DemoStudySetPreview title="Italian Food & Dining" description="Restaurant vocabulary and food terms"
-          language="Italian" :card-count="30" cefr-level="A2" :completion-rate="60" :show-actions="false" />
-
-        <DemoStudySetPreview title="Portuguese Travel" description="Essential phrases for traveling in Portugal"
-          language="Portuguese" :card-count="35" cefr-level="B1" :completion-rate="72" :show-actions="false" />
-
-        <DemoStudySetPreview title="Dutch Daily Routines" description="Vocabulary for everyday activities"
-          language="Dutch" :card-count="20" cefr-level="A2" :completion-rate="90" :show-actions="false" />
+        <DemoStudySetPreview v-for="(lang, index) in demoLanguages" :key="index" :title="`${lang} Basics`"
+          :description="`Essential ${lang} vocabulary for beginners`" :language="lang" :card-count="25 + index * 5"
+          cefr-level="A1" :completion-rate="80 - index * 10" :show-actions="false" />
       </div>
     </section>
 
@@ -258,9 +243,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
 const { status } = useAuth();
 const demoSection = ref<HTMLElement | null>(null);
-
+const demoLanguages = SUPPORTED_LANGUAGES.map(lang => lang.name).slice(0, 5);
 const scrollToDemo = () => {
   demoSection.value?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
