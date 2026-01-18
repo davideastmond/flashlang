@@ -5,6 +5,15 @@ const r = (p: string) => path.resolve(__dirname, p);
 
 export default defineConfig({
   test: {
+    coverage: {
+      exclude: [
+        "**/*.config.ts",
+        "dist/**",
+        "test/**",
+        "node_modules/**",
+        ".nuxt",
+      ],
+    },
     projects: [
       {
         test: {
