@@ -33,10 +33,19 @@ export default defineEventHandler(async (event) => {
   try {
     const response = await generateGeminiResponse(prompt);
     try {
-      createFlashCardAIFormatResponseValidator.parse(
-        JSON.parse(response as any)
-      );
+      createFlashCardAIFormatResponseValidator.parse(response as any);
+      return {
+        success: true,
+        flashcards: response,
+      };
     } catch (error) {
+      if (error instanceof SyntaxError) {
+        console.log("45 --Syntax Error!", error.message);
+        return createError({
+          statusCode: 500,
+          statusMessage: "AI response is not valid JSON.",
+        });
+      }
       if (error instanceof z.ZodError) {
         return createError({
           statusCode: 500,
@@ -45,10 +54,6 @@ export default defineEventHandler(async (event) => {
         });
       }
     }
-    return {
-      success: true,
-      flashcards: response,
-    };
   } catch (error) {
     return createError({
       statusCode: 500,
