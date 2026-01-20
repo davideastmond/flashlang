@@ -40,7 +40,6 @@ export default defineEventHandler(async (event) => {
       };
     } catch (error) {
       if (error instanceof SyntaxError) {
-        console.log("45 --Syntax Error!", error.message);
         return createError({
           statusCode: 500,
           statusMessage: "AI response is not valid JSON.",
