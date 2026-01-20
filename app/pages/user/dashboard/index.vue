@@ -53,7 +53,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Total Study Sets</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySets }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalStudySets }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -67,7 +67,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Total Study Sessions</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalStudySessions }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalStudySessions }}</p>
               </div>
               <div class="p-3 bg-blue-500/20 rounded-full">
                 <svg class="h-6 w-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Flash Cards</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.totalCards }}</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.totalCards }}</p>
               </div>
               <div class="p-3 bg-green-500/20 rounded-full">
                 <svg class="h-6 w-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Study Streak</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.studyStreak }} days</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.studyStreak }} days</p>
               </div>
               <div class="p-3 bg-yellow-500/20 rounded-full">
                 <svg class="h-6 w-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,7 +112,7 @@
             <div class="flex items-center justify-between">
               <div>
                 <p class="text-sm font-medium text-gray-400">Accuracy</p>
-                <p class="text-2xl font-bold text-white mt-1">{{ stats.accuracy }}%</p>
+                <p class="text-2xl font-bold text-white mt-1">{{ stats?.accuracy }}%</p>
               </div>
               <div class="p-3 bg-purple-500/20 rounded-full">
                 <svg class="h-6 w-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -129,7 +129,7 @@
       <div>
         <h2 class="text-xl font-semibold text-white mb-4">Recent History</h2>
         <div class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden border border-gray-700">
-          <div v-if="stats.recentSessions.length === 0" class="p-8 text-center">
+          <div v-if="stats?.recentSessions.length === 0" class="p-8 text-center">
             <svg class="mx-auto h-12 w-12 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -148,47 +148,48 @@
           </div>
 
           <ul v-else class="divide-y divide-gray-700">
-            <li v-for="session in stats.recentSessions" :key="session.id"
-              class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors"
-              @click="handleOpenSession(session.id)">
-              <div class="flex items-center justify-between">
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between mb-2">
-                    <h3 class="text-sm font-medium text-white truncate">{{ session.title }}</h3>
+            <NuxtLink v-for="session in stats?.recentSessions" :key="session.id"
+              :to="`/user/studysets/${toShortenedUuid(session.studySetId)}`" class="block">
+              <li class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors">
+                <div class="flex items-center justify-between">
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center justify-between mb-2">
+                      <h3 class="text-sm font-medium text-white truncate">{{ session.title }}</h3>
 
+                    </div>
+                    <div class="flex items-center text-sm text-gray-400 space-x-4">
+                      <span class="flex items-center">
+                        <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ formatDate(new Date(session.startTime)) }}
+                      </span>
+                      <span class="flex items-center">
+                        <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                        </svg>
+                        {{ session.totalCount }} cards
+                      </span>
+                      <span v-if="session.correctCount !== null" class="flex items-center">
+                        <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {{ session.correctCount !== undefined && session.totalCount !== 0 ?
+                          Math.round((session.correctCount / session.totalCount) * 100) : 0 }}% correct
+                      </span>
+                    </div>
                   </div>
-                  <div class="flex items-center text-sm text-gray-400 space-x-4">
-                    <span class="flex items-center">
-                      <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {{ formatDate(new Date(session.startTime)) }}
-                    </span>
-                    <span class="flex items-center">
-                      <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                      </svg>
-                      {{ session.totalCount }} cards
-                    </span>
-                    <span v-if="session.correctCount !== null" class="flex items-center">
-                      <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {{ session.correctCount !== undefined && session.totalCount !== 0 ?
-                        Math.round((session.correctCount / session.totalCount) * 100) : 0 }}% correct
-                    </span>
+                  <div class="ml-4 flex-shrink-0">
+                    <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
                   </div>
                 </div>
-                <div class="ml-4 flex-shrink-0">
-                  <svg class="h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
-            </li>
+              </li>
+            </NuxtLink>
           </ul>
         </div>
       </div>
@@ -205,8 +206,7 @@ definePageMeta({
   layout: 'user-layout'
 });
 
-// Stats
-const stats = ref<{
+type StatsType = {
   totalStudySets: number;
   totalStudySessions: number;
   totalCards: number;
@@ -218,47 +218,18 @@ const stats = ref<{
     startTime: string;
     totalCount: number;
     correctCount: number;
+    studySetId: string;
   }>;
 }
->({
-  totalStudySets: 0,
-  totalStudySessions: 0,
-  totalCards: 0,
-  studyStreak: 0,
-  accuracy: 0,
-  recentSessions: [],
-});
 
-await useAsyncData(() => fetchUserData());
 
-// Fetch user data
-async function fetchUserData() {
-  try {
-    const { data } = await $fetch('/api/user/profile/stats');
-
-    stats.value = {
-      ...data as typeof stats.value,
-    };
-
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-  }
-}
+const { data: stats } = await useFetch<StatsType>('/api/user/profile/stats');
 
 // Handle create session
 async function handleCreateSession() {
   // Navigate to create session page
-  await navigateTo('/studysets/new');
+  await navigateTo('/user/studysets/new');
 }
-
-
-// Handle open session
-async function handleOpenSession(sessionId: string) {
-  // Navigate to session detail page
-  await navigateTo(`/studysets/${toShortenedUuid(sessionId)}`);
-}
-
-
 
 // Format date
 function formatDate(date: Date): string {

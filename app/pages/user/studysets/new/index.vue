@@ -125,7 +125,7 @@
 
         <!-- Form Actions -->
         <div class="flex items-center justify-between gap-4">
-          <NuxtLink to="/studysets/view"
+          <NuxtLink to="/user/studysets/view"
             class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
             Cancel
           </NuxtLink>
@@ -314,7 +314,7 @@ const handleAiGenerate = async (attributes: AIFormAttributes) => {
   const concatTitleDescription = `${attributes.cefrLanguage} ${attributes.languageArea} at the ${attributes.cefrLevel} level`
   try {
     // Call the AI API to generate flashcards as a stringified JSON array
-    const response = await $fetch('/api/ai/flashcards', {
+    const response = await $fetch<{ success: boolean; flashcards: string }>('/api/ai/flashcards', {
       method: 'POST',
       body: {
         language: attributes.language,
