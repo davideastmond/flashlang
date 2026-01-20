@@ -42,11 +42,10 @@ describe("generateOpenAIResponse", () => {
 
   it("should handle API errors", async () => {
     const OpenAIApi: any = (await import("openai")).default;
-    const mockError = new Error("API Error");
 
     OpenAIApi.mockImplementation(() => ({
       responses: {
-        create: vi.fn().mockRejectedValue(mockError),
+        create: vi.fn().mockRejectedValue(new Error("API Error")),
       },
     }));
 
