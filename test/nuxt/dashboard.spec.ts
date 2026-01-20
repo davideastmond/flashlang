@@ -100,9 +100,9 @@ describe("Dashboard Component", () => {
     // Check for empty state message
     expect(wrapper.text()).toContain("No sessions yet");
     expect(wrapper.text()).toContain(
-      "Get started by creating your first flashcard session."
+      "Get started by creating your first study set of cards.",
     );
-    expect(wrapper.text()).toContain("Create Session");
+    expect(wrapper.text()).toContain("Create Study Set");
   });
 
   it("renders Quick Actions cards with correct links", async () => {
