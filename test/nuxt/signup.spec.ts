@@ -43,11 +43,8 @@ describe("Signup Component", () => {
     // Check for header
     expect(wrapper.text()).toContain("Create Your Account");
     expect(wrapper.text()).toContain(
-      "Start your language learning journey today"
+      "Start your language learning journey today",
     );
-
-    // Check for Google sign up button
-    expect(wrapper.text()).toContain("Sign up with Google");
 
     // Check for form fields
     expect(wrapper.find("#firstName").exists()).toBe(true);
@@ -83,22 +80,22 @@ describe("Signup Component", () => {
     await wrapper.find("#password2").setValue("Password123!");
 
     expect((wrapper.find("#firstName").element as HTMLInputElement).value).toBe(
-      "John"
+      "John",
     );
     expect((wrapper.find("#lastName").element as HTMLInputElement).value).toBe(
-      "Doe"
+      "Doe",
     );
     expect((wrapper.find("#email").element as HTMLInputElement).value).toBe(
-      "john@example.com"
+      "john@example.com",
     );
     expect(
-      (wrapper.find("#dateOfBirth").element as HTMLInputElement).value
+      (wrapper.find("#dateOfBirth").element as HTMLInputElement).value,
     ).toBe("2000-01-01");
     expect((wrapper.find("#password1").element as HTMLInputElement).value).toBe(
-      "Password123!"
+      "Password123!",
     );
     expect((wrapper.find("#password2").element as HTMLInputElement).value).toBe(
-      "Password123!"
+      "Password123!",
     );
   });
 
@@ -206,7 +203,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "Password must be at least 8 characters long"
+      "Password must be at least 8 characters long",
     );
   });
 
@@ -224,7 +221,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "Password must contain at least one uppercase letter"
+      "Password must contain at least one uppercase letter",
     );
   });
 
@@ -242,7 +239,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "Password must contain at least one lowercase letter"
+      "Password must contain at least one lowercase letter",
     );
   });
 
@@ -260,7 +257,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "Password must contain at least one number"
+      "Password must contain at least one number",
     );
   });
 
@@ -278,7 +275,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "Password must contain at least one special character"
+      "Password must contain at least one special character",
     );
   });
 
@@ -290,7 +287,7 @@ describe("Signup Component", () => {
     const birthDate = new Date(
       today.getFullYear() - 12,
       today.getMonth(),
-      today.getDate()
+      today.getDate(),
     );
     const dateString = birthDate.toISOString().split("T")[0];
 
@@ -305,7 +302,7 @@ describe("Signup Component", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.text()).toContain(
-      "You must be at least 13 years old to sign up"
+      "You must be at least 13 years old to sign up",
     );
   });
 
@@ -428,7 +425,7 @@ describe("Signup Component", () => {
     expect(wrapper.find("#password1").attributes("required")).toBeDefined();
     expect(wrapper.find("#password2").attributes("required")).toBeDefined();
     expect(
-      wrapper.find('input[type="checkbox"]').attributes("required")
+      wrapper.find('input[type="checkbox"]').attributes("required"),
     ).toBeDefined();
   });
 
@@ -443,19 +440,19 @@ describe("Signup Component", () => {
 
     expect(wrapper.find("#email").attributes("type")).toBe("email");
     expect(wrapper.find("#email").attributes("placeholder")).toBe(
-      "your@email.com"
+      "your@email.com",
     );
 
     expect(wrapper.find("#dateOfBirth").attributes("type")).toBe("date");
 
     expect(wrapper.find("#password1").attributes("type")).toBe("password");
     expect(wrapper.find("#password1").attributes("placeholder")).toBe(
-      "••••••••"
+      "••••••••",
     );
 
     expect(wrapper.find("#password2").attributes("type")).toBe("password");
     expect(wrapper.find("#password2").attributes("placeholder")).toBe(
-      "••••••••"
+      "••••••••",
     );
   });
 
@@ -480,22 +477,6 @@ describe("Signup Component", () => {
     const wrapper = await mountSuspended(Signup);
 
     expect(wrapper.find(".text-red-400").exists()).toBe(false);
-  });
-
-  it("renders Google sign up button with SVG icon", async () => {
-    const wrapper = await mountSuspended(Signup);
-
-    const googleButton = wrapper.find('button[type="button"]');
-    expect(googleButton.exists()).toBe(true);
-    expect(googleButton.text()).toContain("Sign up with Google");
-    expect(googleButton.find("svg").exists()).toBe(true);
-  });
-
-  it("renders divider with 'or' text", async () => {
-    const wrapper = await mountSuspended(Signup);
-
-    expect(wrapper.text()).toContain("or");
-    expect(wrapper.html()).toContain("border-t");
   });
 
   it("displays validation error for missing first name", async () => {
