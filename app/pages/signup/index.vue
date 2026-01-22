@@ -13,8 +13,6 @@
         <h1 class="text-3xl font-bold text-slate-50 text-center mb-2 tracking-tight">Create Your Account</h1>
         <p class="text-slate-400 text-center mb-8 text-sm">Start your language learning journey today</p>
 
-
-
         <!-- Sign Up Form -->
         <form @submit.prevent="handleSignup" class="space-y-5">
           <!-- Name Fields -->
@@ -50,7 +48,7 @@
             <input type="date" id="dateOfBirth" v-model="dateOfBirth" required
               class="w-full px-4 py-3.5 bg-white/5 border border-white/10 rounded-xl text-slate-100 placeholder-slate-500 focus:outline-none focus:bg-white/8 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 transition-all duration-300 [color-scheme:dark]" />
             <p class="text-red-400 text-sm mt-1.5" v-if="validationErrors.dateOfBirth">{{ validationErrors.dateOfBirth
-              }}</p>
+            }}</p>
           </div>
 
           <!-- Password Field -->
