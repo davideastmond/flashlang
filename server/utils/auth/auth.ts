@@ -23,7 +23,7 @@ export const authOptions: AuthOptions = {
 
         const isPasswordValid = await bcrypt.compare(
           credentials?.password ?? "",
-          queryUser.passwordHash
+          queryUser.passwordHash,
         );
         if (!isPasswordValid) {
           throw new Error("Invalid e-mail or password.");
@@ -40,9 +40,10 @@ export const authOptions: AuthOptions = {
           id: user?.id,
           email: user?.email,
           name: user?.name,
+          // Set token expiration to 1 hour
+          exp: Math.floor(Date.now() / 1000) + 60 * 60,
         };
       }
-
       return token;
     },
     session: async ({ session, token }) => {
@@ -62,5 +63,6 @@ export const authOptions: AuthOptions = {
   },
   session: {
     strategy: "jwt",
+    maxAge: 60 * 60, // 1 hour
   },
 };

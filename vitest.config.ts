@@ -12,6 +12,7 @@ export default defineConfig({
         "test/**",
         "node_modules/**",
         ".nuxt",
+        "**virtual:nuxt**",
       ],
     },
     projects: [
