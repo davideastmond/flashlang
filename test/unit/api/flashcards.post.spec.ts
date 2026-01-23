@@ -8,13 +8,12 @@ const { defineEventHandler } = useH3TestUtils();
 const mockGeminiResponse = vi.fn();
 
 vi.spyOn(GeminiClient, "generateGeminiResponse").mockImplementation(() =>
-  mockGeminiResponse()
+  mockGeminiResponse(),
 );
 
 describe("api/ai/flashcards POST endpoint tests", async () => {
-  const handler = await import(
-    "../../../server/api/ai/flashcards/index.post.ts"
-  );
+  const handler =
+    await import("../../../server/api/ai/flashcards/index.post.ts");
 
   it("is registered as an event handler", () => {
     expect(defineEventHandler).toHaveBeenCalled();
@@ -39,7 +38,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             language: "en-US",
             cefrLanguage: "fr-FR",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -48,11 +47,11 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
       expect.stringContaining(
-        "Generate a set of 5 flashcards on French vocabulary"
-      )
+        "Generate a set of 5 flashcards on French vocabulary",
+      ),
     );
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
-      expect.stringContaining("language en-US")
+      expect.stringContaining("language en-US"),
     );
   });
 
@@ -74,7 +73,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             language: "en-US",
             cefrLanguage: "es-ES",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -83,8 +82,8 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
       expect.stringContaining(
-        "Generate a set of 3 flashcards on Spanish greetings"
-      )
+        "Generate a set of 3 flashcards on Spanish greetings",
+      ),
     );
   });
 
@@ -105,7 +104,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             flashCardCount: 2,
             cefrLanguage: "en-US",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -113,10 +112,10 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
-      expect.stringContaining("language es-ES")
+      expect.stringContaining("language es-ES"),
     );
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
-      expect.stringContaining("learning en-US")
+      expect.stringContaining("learning en-US"),
     );
   });
 
@@ -145,7 +144,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             flashCardCount: 10,
             cefrLanguage: "de-DE",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -154,11 +153,11 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
       expect.stringContaining(
-        "Generate a set of 10 flashcards on German phrases"
-      )
+        "Generate a set of 10 flashcards on German phrases",
+      ),
     );
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
-      expect.stringContaining("language de-DE")
+      expect.stringContaining("language de-DE"),
     );
   });
   it("handles Gemini API errors gracefully", async () => {
@@ -172,7 +171,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             cefrLanguage: "en-US",
             language: "en-US",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -180,10 +179,42 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("statusCode", 500);
     expect(response).toHaveProperty(
       "statusMessage",
-      "Failed to generate flashcards.API rate limit exceeded"
+      "Failed to generate flashcards.API rate limit exceeded",
     );
   });
+  it("request body does not pass validation", async () => {
+    const event = await import("../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) =>
+        createMockH3Event({
+          body: {},
+        }),
+    );
+    const response = await handler.default(event);
 
+    expect(response).toHaveProperty("statusCode", 400);
+    expect(response).toHaveProperty("statusMessage", "Validation error.");
+  });
+  it("gemini response does not pass validation", async () => {
+    const invalidGeminiResponse = "This is not a valid JSON response";
+
+    mockGeminiResponse.mockResolvedValue(invalidGeminiResponse);
+    const event = await import("../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) =>
+        createMockH3Event({
+          body: {
+            topic: "History facts",
+            language: "en-US",
+            flashCardCount: 7,
+            cefrLanguage: "en-US",
+          },
+        }),
+    );
+
+    const response = await handler.default(event);
+
+    expect(response).toHaveProperty("statusCode", 500);
+    expect(response).toHaveProperty("statusMessage");
+  });
   it("returns response from Gemini API", async () => {
     const mockResponse = [{ question: "What is 2 + 2?", answer: "4" }];
     mockGeminiResponse.mockResolvedValue(mockResponse);
@@ -197,7 +228,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
             flashCardCount: 7,
             cefrLanguage: "en-US",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);

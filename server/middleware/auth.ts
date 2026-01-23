@@ -6,7 +6,9 @@ export default defineEventHandler(async (event) => {
     "/api/ai/",
     "/api/flash-cards",
     "/api/studysets",
+    "/api/user",
   ];
+
   if (!appliesToPaths.some((path) => event.path.startsWith(path))) {
     return;
   }
