@@ -85,8 +85,7 @@ const handleSignin = async () => {
     await navigateTo('/user/dashboard');
   } catch (error) {
     apiError.value = 'An unexpected error occurred. Please try again later.';
-    console.error('SignIn error:', error);
-    return;
+    console.error('SignIn error:', error)
   }
 }
 </script>
