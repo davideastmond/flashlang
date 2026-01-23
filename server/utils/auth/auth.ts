@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
           queryUser.passwordHash,
         );
         if (!isPasswordValid) {
-          throw new Error("Invalid e-mail or password.");
+          throw new Error("We can't sign you in with those credentials.");
         }
         return queryUser;
       },
