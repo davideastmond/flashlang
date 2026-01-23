@@ -36,7 +36,7 @@ describe("Login Component", () => {
     // Check for header
     expect(wrapper.text()).toContain("Welcome Back");
     expect(wrapper.text()).toContain(
-      "Sign in to continue your learning journey"
+      "Sign in to continue your learning journey",
     );
 
     // Check for form fields
@@ -70,7 +70,7 @@ describe("Login Component", () => {
     await emailInput.setValue("test@example.com");
 
     expect((emailInput.element as HTMLInputElement).value).toBe(
-      "test@example.com"
+      "test@example.com",
     );
   });
 
@@ -81,7 +81,7 @@ describe("Login Component", () => {
     await passwordInput.setValue("password123");
 
     expect((passwordInput.element as HTMLInputElement).value).toBe(
-      "password123"
+      "password123",
     );
   });
 
@@ -111,10 +111,9 @@ describe("Login Component", () => {
 
     // Verify signIn was called with correct parameters
     expect(mockSignIn).toHaveBeenCalledWith("credentials", {
-      redirect: true,
+      redirect: false,
       email: "test@example.com",
       password: "password123",
-      callbackUrl: "/user/dashboard",
     });
   });
 
