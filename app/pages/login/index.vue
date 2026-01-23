@@ -70,17 +70,22 @@ const apiError = ref<string | null>(null)
 
 const handleSignin = async () => {
   apiError.value = null;
-  const res = await signIn('credentials', {
-    redirect: true,
-    email: email.value,
-    password: password.value,
-    callbackUrl: '/user/dashboard'
-  });
 
-  if (res?.error) {
-    apiError.value = res.error;
-    console.error('SignIn error:', res.error);
-
+  try {
+    const { error } = await signIn('credentials', {
+      redirect: false,
+      email: email.value,
+      password: password.value,
+    })
+    if (error) {
+      apiError.value = error;
+      return;
+    }
+    // If all goes ok, redirect to dashboard
+    await navigateTo('/user/dashboard');
+  } catch (error) {
+    apiError.value = 'An unexpected error occurred. Please try again later.';
+    console.error('SignIn error:', error);
     return;
   }
 }
