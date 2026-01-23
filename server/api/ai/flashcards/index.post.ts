@@ -33,7 +33,9 @@ export default defineEventHandler(async (event) => {
   try {
     const response = await generateGeminiResponse(prompt);
     try {
-      createFlashCardAIFormatResponseValidator.parse(response as any);
+      createFlashCardAIFormatResponseValidator.parse(
+        JSON.parse(response as any),
+      );
       return {
         success: true,
         flashcards: response,

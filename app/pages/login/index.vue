@@ -76,6 +76,7 @@ const handleSignin = async () => {
       redirect: false,
       email: email.value,
       password: password.value,
+      callbackUrl: '/user/dashboard',
     })
     if (error) {
       apiError.value = error;

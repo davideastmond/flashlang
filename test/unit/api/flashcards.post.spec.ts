@@ -20,13 +20,13 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with default parameters", async () => {
-    const mockFlashcards = [
-      { question: "homme", answer: "man" },
-      { question: "femme", answer: "woman" },
-      { question: "enfant", answer: "child" },
-      { question: "maison", answer: "house" },
-      { question: "chat", answer: "cat" },
-    ];
+    const mockFlashcards = `[
+      { "question": "homme", "answer": "man" },
+      { "question": "femme", "answer": "woman" },
+      { "question": "enfant", "answer": "child" },
+      { "question": "maison", "answer": "house" },
+      { "question": "chat", "answer": "cat" }
+    ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
@@ -56,11 +56,8 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with custom flashCardCount", async () => {
-    const mockFlashcards = [
-      { question: "hola", answer: "hello" },
-      { question: "adiós", answer: "goodbye" },
-      { question: "gracias", answer: "thank you" },
-    ];
+    const mockFlashcards = `[
+      { "question": "hola", "answer": "hello" }, { "question": "adiós", "answer": "goodbye" }, { "question": "gracias", "answer": "thank you" } ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
@@ -88,10 +85,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with custom language parameter", async () => {
-    const mockFlashcards = [
-      { question: "gato", answer: "cat" },
-      { question: "perro", answer: "dog" },
-    ];
+    const mockFlashcards = `[ { "question": "gato", "answer": "cat" }, { "question": "perro", "answer": "dog" } ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
@@ -108,7 +102,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-
+    console.log("138 Response:", response);
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
@@ -120,18 +114,8 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with all custom parameters", async () => {
-    const mockFlashcards = [
-      { question: "Wie geht's?", answer: "How are you?" },
-      { question: "Guten Tag", answer: "Good day" },
-      { question: "Danke", answer: "Thank you" },
-      { question: "Bitte", answer: "Please" },
-      { question: "Auf Wiedersehen", answer: "Goodbye" },
-      { question: "Ja", answer: "Yes" },
-      { question: "Nein", answer: "No" },
-      { question: "Entschuldigung", answer: "Excuse me" },
-      { question: "Sprechen Sie Englisch?", answer: "Do you speak English?" },
-      { question: "Ich verstehe nicht", answer: "I don't understand" },
-    ];
+    const mockFlashcards =
+      '[{ "question": "Wie gehts?", "answer": "How are you?" },{ "question": "Guten Tag", "answer": "Good day" },{ "question": "Danke", "answer": "Thank you" },{ "question": "Bitte", "answer": "Please" },{ "question": "Auf Wiedersehen", "answer": "Goodbye" },{ "question": "Ja", "answer": "Yes" },{ "question": "Nein", "answer": "No" },{ "question": "Entschuldigung", "answer": "Excuse me" },{ "question": "Sprechen Sie Englisch?", "answer": "Do you speak English?" },{ "question": "Ich verstehe nicht", "answer": "I dont understand" }]';
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
@@ -148,7 +132,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-
+    console.log("140 Response:", response);
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
@@ -216,7 +200,8 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("statusMessage");
   });
   it("returns response from Gemini API", async () => {
-    const mockResponse = [{ question: "What is 2 + 2?", answer: "4" }];
+    const mockResponse = '[{ "question": "What is 2 + 2?", "answer": "4" }]';
+
     mockGeminiResponse.mockResolvedValue(mockResponse);
 
     const event = await import("../../utils/mock-h3-event.ts").then(

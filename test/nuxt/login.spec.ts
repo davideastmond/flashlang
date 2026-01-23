@@ -114,6 +114,7 @@ describe("Login Component", () => {
       redirect: false,
       email: "test@example.com",
       password: "password123",
+      callbackUrl: "/user/dashboard",
     });
   });
 
