@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../../db/index.ts";
+import { useH3TestUtils } from "../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -9,7 +9,7 @@ const { defineEventHandler } = useH3TestUtils();
 const mockDelete = vi.fn();
 const mockWhere = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../../db/index.ts", () => ({
   db: {
     delete: vi.fn(),
   },
@@ -23,7 +23,7 @@ vi.mock("#auth", () => ({
 
 describe("api/studysets/[id] DELETE endpoint tests", async () => {
   const handler =
-    await import("../../../server/api/studysets/[id]/index.delete.ts");
+    await import("../../../../../server/api/studysets/[id]/index.delete.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -46,7 +46,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -63,7 +63,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -82,7 +82,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -103,7 +103,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
       user: { id: "user-456" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-789" },
@@ -128,7 +128,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
     // Simulate a database error
     mockWhere.mockRejectedValue(new Error("Database connection failed"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -149,7 +149,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
 
     const validUUID = "550e8400-e29b-41d4-a716-446655440000";
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: validUUID },
@@ -171,7 +171,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
 
     // The endpoint doesn't check if the study set exists before attempting delete
     // It will return success even if nothing was deleted
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "nonexistent-study-set" },
@@ -193,7 +193,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
 
     const studySetId = "study-set-456";
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: studySetId },
@@ -216,14 +216,14 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event1 = await import("../../utils/mock-h3-event.ts").then(
+    const event1 = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-1" },
         }),
     );
 
-    const event2 = await import("../../utils/mock-h3-event.ts").then(
+    const event2 = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-2" },
@@ -248,7 +248,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
     const dbError = new Error("Foreign key constraint violation");
     mockWhere.mockRejectedValue(dbError);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -271,7 +271,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
         user: { id: userIds[i] },
       });
 
-      const event = await import("../../utils/mock-h3-event.ts").then(
+      const event = await import("../../../../utils/mock-h3-event.ts").then(
         ({ createMockH3Event }) =>
           createMockH3Event({
             params: { id: studySetIds[i] },
@@ -291,7 +291,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "" },
@@ -312,7 +312,7 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
 
     const specialId = "study-set-with-special-chars-!@#";
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: specialId },

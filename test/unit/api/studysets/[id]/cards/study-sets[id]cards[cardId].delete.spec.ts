@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../../../db/index.ts";
+import { useH3TestUtils } from "../../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -12,7 +12,7 @@ const mockWhere = vi.fn();
 const mockLimit = vi.fn();
 const mockDelete = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../../../db/index.ts", () => ({
   db: {
     select: vi.fn(),
     delete: vi.fn(),
@@ -26,9 +26,8 @@ vi.mock("#auth", () => ({
 }));
 
 describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => {
-  const handler = await import(
-    "../../../server/api/studysets/[id]/cards/[cardId].delete.ts"
-  );
+  const handler =
+    await import("../../../../../../server/api/studysets/[id]/cards/[cardId].delete.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -60,11 +59,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-1", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -78,11 +77,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-1", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -98,17 +97,17 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
     expect(response.statusCode).toBe(400);
     expect(response.statusMessage).toBe(
-      "Study set ID and card ID are required"
+      "Study set ID and card ID are required",
     );
     expect(mockSelect).not.toHaveBeenCalled();
     expect(mockDelete).not.toHaveBeenCalled();
@@ -119,18 +118,18 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
 
     expect(response.statusCode).toBe(400);
     expect(response.statusMessage).toBe(
-      "Study set ID and card ID are required"
+      "Study set ID and card ID are required",
     );
     expect(mockSelect).not.toHaveBeenCalled();
     expect(mockDelete).not.toHaveBeenCalled();
@@ -141,18 +140,18 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: {},
-        })
+        }),
     );
 
     const response = await handler.default(event);
 
     expect(response.statusCode).toBe(400);
     expect(response.statusMessage).toBe(
-      "Study set ID and card ID are required"
+      "Study set ID and card ID are required",
     );
     expect(mockSelect).not.toHaveBeenCalled();
     expect(mockDelete).not.toHaveBeenCalled();
@@ -164,11 +163,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
     });
     mockLimit.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-999", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -186,11 +185,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
     // Empty array means study set not found for this user
     mockLimit.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-1", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -221,11 +220,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
 
     mockLimit.mockResolvedValue(mockStudySet);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-1", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -257,11 +256,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
 
     mockLimit.mockResolvedValue(mockStudySet);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-2", cardId: "card-2" },
-        })
+        }),
     );
 
     await handler.default(event);
@@ -290,11 +289,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
 
     mockLimit.mockResolvedValue(mockStudySet);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-3", cardId: "card-3" },
-        })
+        }),
     );
 
     await handler.default(event);
@@ -312,11 +311,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
     });
     mockLimit.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-nonexistent", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -332,11 +331,11 @@ describe("api/studysets/[id]/cards/[cardId] DELETE endpoint tests", async () => 
     });
     mockLimit.mockResolvedValue(undefined);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "set-undefined", cardId: "card-1" },
-        })
+        }),
     );
 
     const response = await handler.default(event);

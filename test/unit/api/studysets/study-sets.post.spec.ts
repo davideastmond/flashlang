@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../db/index.ts";
+import { useH3TestUtils } from "../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -10,7 +10,7 @@ const mockInsert = vi.fn();
 const mockValues = vi.fn();
 const mockReturning = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../db/index.ts", () => ({
   db: {
     insert: vi.fn(),
   },
@@ -23,7 +23,8 @@ vi.mock("#auth", () => ({
 }));
 
 describe("api/studysets POST endpoint tests", async () => {
-  const handler = await import("../../../server/api/studysets/index.post.ts");
+  const handler =
+    await import("../../../../server/api/studysets/index.post.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -55,7 +56,7 @@ describe("api/studysets POST endpoint tests", async () => {
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -82,7 +83,7 @@ describe("api/studysets POST endpoint tests", async () => {
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -111,7 +112,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -157,7 +158,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -193,7 +194,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -229,7 +230,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -263,7 +264,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -292,7 +293,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -321,7 +322,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -345,7 +346,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -368,7 +369,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -397,7 +398,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -426,7 +427,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -455,7 +456,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -484,7 +485,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -513,7 +514,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -540,7 +541,7 @@ describe("api/studysets POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -578,7 +579,7 @@ describe("api/studysets POST endpoint tests", async () => {
       },
     ]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {

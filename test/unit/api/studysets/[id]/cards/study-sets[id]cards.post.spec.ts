@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../../../db/index.ts";
+import { useH3TestUtils } from "../../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -14,7 +14,7 @@ const mockFrom = vi.fn();
 const mockWhere = vi.fn();
 const mockLimit = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../../../db/index.ts", () => ({
   db: {
     insert: vi.fn(),
     select: vi.fn(),
@@ -28,9 +28,8 @@ vi.mock("#auth", () => ({
 }));
 
 describe("api/studysets/:id/cards POST endpoint tests", async () => {
-  const handler = await import(
-    "../../../server/api/studysets/[id]/cards/index.post.ts"
-  );
+  const handler =
+    await import("../../../../../../server/api/studysets/[id]/cards/index.post.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -81,7 +80,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -89,7 +88,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -102,7 +101,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -110,7 +109,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -125,7 +124,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: {},
@@ -133,7 +132,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -150,7 +149,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
 
     mockLimit.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "non-existent-study-set" },
@@ -158,7 +157,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -176,7 +175,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
     // The database query filters by both ID AND userId, so it returns empty when user doesn't match
     mockLimit.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-456" },
@@ -184,7 +183,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of Germany?",
             answer: "Berlin",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -197,7 +196,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -205,7 +204,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -226,7 +225,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
         userId: "user-123",
         question: "What is the capital of France?",
         answer: "Paris",
-      })
+      }),
     );
   });
 
@@ -246,7 +245,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       },
     ]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -254,7 +253,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "A",
             answer: "B",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -287,7 +286,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       },
     ]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -295,7 +294,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: longText,
             answer: longText,
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -315,7 +314,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -323,7 +322,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "",
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -339,7 +338,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -347,7 +346,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: "",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -363,14 +362,14 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
           body: {
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -386,14 +385,14 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
           body: {
             question: "What is the capital of France?",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -411,7 +410,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
 
     const tooLongText = "A".repeat(1001);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -419,7 +418,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: tooLongText,
             answer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -437,7 +436,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
 
     const tooLongText = "A".repeat(1001);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -445,7 +444,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is the capital of France?",
             answer: tooLongText,
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -461,7 +460,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -469,7 +468,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "",
             answer: "",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -487,12 +486,12 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
           body: {},
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -508,7 +507,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -518,7 +517,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             extraField: "should be ignored",
             anotherField: 123,
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -540,7 +539,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       user: { id: "user-123" },
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -548,7 +547,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What is 2+2?",
             answer: "4",
           },
-        })
+        }),
     );
 
     await handler.default(event);
@@ -564,7 +563,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
         userId: "user-123",
         question: "What is 2+2?",
         answer: "4",
-      })
+      }),
     );
 
     // Verify the second insert call was for the studySetFlashCards junction table
@@ -573,7 +572,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       expect.objectContaining({
         studySetId: "study-set-123",
         flashCardId: expect.any(String),
-      })
+      }),
     );
   });
 
@@ -593,7 +592,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       },
     ]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -601,7 +600,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "What's the symbol for pi? π",
             answer: "π (approximately 3.14159...)",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -631,7 +630,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
       },
     ]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           params: { id: "study-set-123" },
@@ -639,7 +638,7 @@ describe("api/studysets/:id/cards POST endpoint tests", async () => {
             question: "Translate: 你好",
             answer: "Hello 👋",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
