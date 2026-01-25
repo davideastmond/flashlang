@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-import * as GeminiClient from "../../../server/utils/gemini/gemini-client.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as GeminiClient from "../../../../../server/utils/gemini/gemini-client.ts";
+import { useH3TestUtils } from "../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -13,7 +13,7 @@ vi.spyOn(GeminiClient, "generateGeminiResponse").mockImplementation(() =>
 
 describe("api/ai/flashcards POST endpoint tests", async () => {
   const handler =
-    await import("../../../server/api/ai/flashcards/index.post.ts");
+    await import("../../../../../server/api/ai/flashcards/index.post.ts");
 
   it("is registered as an event handler", () => {
     expect(defineEventHandler).toHaveBeenCalled();
@@ -30,7 +30,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -61,7 +61,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -89,7 +89,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -119,7 +119,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -147,7 +147,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   it("handles Gemini API errors gracefully", async () => {
     mockGeminiResponse.mockRejectedValue(new Error("API rate limit exceeded"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -167,7 +167,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
   });
   it("request body does not pass validation", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {},
@@ -182,7 +182,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     const invalidGeminiResponse = "This is not a valid JSON response";
 
     mockGeminiResponse.mockResolvedValue(invalidGeminiResponse);
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -204,7 +204,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
 
     mockGeminiResponse.mockResolvedValue(mockResponse);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
