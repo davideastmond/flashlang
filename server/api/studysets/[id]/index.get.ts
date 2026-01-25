@@ -1,6 +1,7 @@
 // Fetch a specific study set with its flash cards
 import { getServerSession } from "#auth";
 import { and, desc, eq } from "drizzle-orm";
+import { getRouterParam } from "h3";
 import { db } from "~~/db";
 import {
   flashCards,
@@ -33,8 +34,8 @@ export default defineEventHandler(async (event) => {
     .where(
       and(
         eq(studySets.id, studySetId),
-        eq(studySets.userId, serverSession.user.id as string)
-      )
+        eq(studySets.userId, serverSession.user.id as string),
+      ),
     )
     .limit(1);
 
@@ -57,7 +58,7 @@ export default defineEventHandler(async (event) => {
     .from(flashCards)
     .innerJoin(
       studySetFlashCards,
-      eq(flashCards.id, studySetFlashCards.flashCardId)
+      eq(flashCards.id, studySetFlashCards.flashCardId),
     )
     .where(eq(studySetFlashCards.studySetId, studySetId));
 
