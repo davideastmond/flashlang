@@ -34,12 +34,13 @@ export default defineEventHandler(async (event) => {
   try {
     const response = await generateOpenAIResponse(prompt);
     try {
-      answerJudgeAIResponseFormatValidator.parse(response);
+      answerJudgeAIResponseFormatValidator.parse(JSON.parse(response));
       return {
         success: true,
         data: response,
       };
     } catch (error) {
+      console.error("AI response validation failed:", error);
       return createError({
         statusCode: 500,
         statusMessage: "Invalid response format from AI.",

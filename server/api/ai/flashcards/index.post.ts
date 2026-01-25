@@ -41,12 +41,6 @@ export default defineEventHandler(async (event) => {
         flashcards: response,
       };
     } catch (error) {
-      if (error instanceof SyntaxError) {
-        return createError({
-          statusCode: 500,
-          statusMessage: "AI response is not valid JSON.",
-        });
-      }
       if (error instanceof z.ZodError) {
         return createError({
           statusCode: 500,
@@ -54,6 +48,12 @@ export default defineEventHandler(async (event) => {
             "Invalid AI response format." + JSON.stringify(error.issues),
         });
       }
+
+      return createError({
+        statusCode: 500,
+        statusMessage:
+          "AI response is not valid JSON: " + (error as Error).message,
+      });
     }
   } catch (error) {
     return createError({

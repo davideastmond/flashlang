@@ -19,10 +19,10 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
     expect(defineEventHandler).toHaveBeenCalled();
   });
   it("returns a success response", async () => {
-    mockAIResponse.mockResolvedValue({
-      isCorrect: false,
-      reasoning: "The user's answer is incorrect.",
-    });
+    mockAIResponse.mockResolvedValue(`{
+      "isCorrect": false,
+      "reasoning": "The user's answer is incorrect."
+    }`);
     const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
@@ -35,7 +35,6 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("data");
   });
