@@ -102,7 +102,6 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-    console.log("138 Response:", response);
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
@@ -132,7 +131,6 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-    console.log("140 Response:", response);
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
