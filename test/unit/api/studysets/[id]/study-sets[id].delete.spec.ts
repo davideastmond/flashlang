@@ -300,9 +300,10 @@ describe("api/studysets/[id] DELETE endpoint tests", async () => {
 
     const response = await handler.default(event);
 
-    // The endpoint will still attempt to delete, even with empty string
-    expect(response).toEqual({ success: true });
-    expect(mockDelete).toHaveBeenCalled();
+    // The endpoint should return a 400 error for empty ID
+    expect(response.statusCode).toBe(400);
+    expect(response.statusMessage).toBe("Study set ID is required");
+    expect(mockDelete).not.toHaveBeenCalled();
   });
 
   it("handles special characters in study set ID", async () => {

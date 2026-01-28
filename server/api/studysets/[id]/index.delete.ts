@@ -12,7 +12,12 @@ export default defineEventHandler(async (event) => {
     });
   }
   const studySetId = getRouterParam(event, "id");
-
+  if (!studySetId || studySetId.trim() === "") {
+    return createError({
+      statusCode: 400,
+      statusMessage: "Study set ID is required",
+    });
+  }
   try {
     await db
       .delete(studySets)
