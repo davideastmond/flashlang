@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "~~/db";
+import { useRuntimeConfig } from "nuxt/app";
+import { db } from "../../../db";
 const runtimeConfig = useRuntimeConfig();
 
 export const authOptions: AuthOptions = {
