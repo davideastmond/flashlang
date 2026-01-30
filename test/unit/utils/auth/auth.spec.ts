@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import type { Session } from "next-auth";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Mock Nuxt app module
-vi.mock("nuxt/app", () => ({
+// Mock Nuxt runtime config
+vi.mock("#imports", () => ({
   useRuntimeConfig: () => ({
     nuxtAuth: {
       secret: "test-secret",
