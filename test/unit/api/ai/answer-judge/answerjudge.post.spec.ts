@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-import * as OpenAIData from "../../../server/utils/open-ai/open-ai-client.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as OpenAIData from "../../../../../server/utils/open-ai/open-ai-client.ts";
+import { useH3TestUtils } from "../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -9,22 +9,21 @@ const mockAIResponse = vi.fn();
 // Simple mock implementation based on the prompt content
 
 vi.spyOn(OpenAIData, "generateOpenAIResponse").mockImplementation(() =>
-  mockAIResponse()
+  mockAIResponse(),
 );
 describe("api/ai/answerjudge POST endpoint tests", async () => {
-  const handler = await import(
-    "../../../server/api/ai/answerjudge/index.post.ts"
-  );
+  const handler =
+    await import("../../../../../server/api/ai/answerjudge/index.post.ts");
 
   it("is registered as an event handler", () => {
     expect(defineEventHandler).toHaveBeenCalled();
   });
   it("returns a success response", async () => {
-    mockAIResponse.mockResolvedValue({
-      isCorrect: false,
-      reasoning: "The user's answer is incorrect.",
-    });
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    mockAIResponse.mockResolvedValue(`{
+      "isCorrect": false,
+      "reasoning": "The user's answer is incorrect."
+    }`);
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -32,16 +31,15 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
             userAnswer: "Paris",
             correctAnswer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
-
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("data");
   });
   it("returns a 400 error for invalid request body", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -49,7 +47,7 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
             userAnswer: "Paris",
             correctAnswer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -60,7 +58,7 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
     mockAIResponse.mockResolvedValue({
       wrongField: true,
     });
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -68,19 +66,19 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
             userAnswer: "Paris",
             correctAnswer: "Paris",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
     expect(response).toHaveProperty("statusCode", 500);
     expect(response).toHaveProperty(
       "statusMessage",
-      "Invalid response format from AI."
+      "Invalid response format from AI.",
     );
   });
   it("handles OpenAI errors gracefully", async () => {
     mockAIResponse.mockRejectedValue(new Error("OpenAI API error"));
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -88,14 +86,14 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
             userAnswer: "4",
             correctAnswer: "4",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
     expect(response).toHaveProperty("statusCode", 500);
     expect(response).toHaveProperty(
       "statusMessage",
-      "Failed to judge the answer."
+      "Failed to judge the answer.",
     );
   });
 });

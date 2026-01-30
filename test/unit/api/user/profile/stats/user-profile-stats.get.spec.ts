@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../../../db/index.ts";
+import { useH3TestUtils } from "../../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -13,7 +13,7 @@ const mockInnerJoin = vi.fn();
 const mockOrderBy = vi.fn();
 const mockLimit = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../../../db/index.ts", () => ({
   db: {
     select: vi.fn(),
   },
@@ -27,7 +27,7 @@ vi.mock("#auth", () => ({
 
 describe("api/user/profile/stats GET endpoint tests", async () => {
   const handler =
-    await import("../../../server/api/user/profile/stats/index.get.ts");
+    await import("../../../../../../server/api/user/profile/stats/index.get.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -60,7 +60,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -74,7 +74,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -117,7 +117,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -211,7 +211,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -287,7 +287,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -362,7 +362,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -414,7 +414,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -450,7 +450,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -524,7 +524,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -583,7 +583,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -599,7 +599,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
 
     mockWhere.mockRejectedValue(new Error("Database connection failed"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -674,7 +674,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 
@@ -764,7 +764,7 @@ describe("api/user/profile/stats GET endpoint tests", async () => {
       }
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) => createMockH3Event({}),
     );
 

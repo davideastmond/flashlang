@@ -1,7 +1,8 @@
+import { useRuntimeConfig } from "#imports";
 import bcrypt from "bcrypt";
 import { AuthOptions, Session } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "~~/db";
+import { db } from "../../../db";
 const runtimeConfig = useRuntimeConfig();
 
 export const authOptions: AuthOptions = {
@@ -26,7 +27,7 @@ export const authOptions: AuthOptions = {
           queryUser.passwordHash,
         );
         if (!isPasswordValid) {
-          throw new Error("Invalid e-mail or password.");
+          throw new Error("We can't sign you in with those credentials.");
         }
         return queryUser;
       },

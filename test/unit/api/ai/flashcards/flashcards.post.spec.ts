@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-import * as GeminiClient from "../../../server/utils/gemini/gemini-client.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as GeminiClient from "../../../../../server/utils/gemini/gemini-client.ts";
+import { useH3TestUtils } from "../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -13,24 +13,24 @@ vi.spyOn(GeminiClient, "generateGeminiResponse").mockImplementation(() =>
 
 describe("api/ai/flashcards POST endpoint tests", async () => {
   const handler =
-    await import("../../../server/api/ai/flashcards/index.post.ts");
+    await import("../../../../../server/api/ai/flashcards/index.post.ts");
 
   it("is registered as an event handler", () => {
     expect(defineEventHandler).toHaveBeenCalled();
   });
 
   it("generates flashcards with default parameters", async () => {
-    const mockFlashcards = [
-      { question: "homme", answer: "man" },
-      { question: "femme", answer: "woman" },
-      { question: "enfant", answer: "child" },
-      { question: "maison", answer: "house" },
-      { question: "chat", answer: "cat" },
-    ];
+    const mockFlashcards = `[
+      { "question": "homme", "answer": "man" },
+      { "question": "femme", "answer": "woman" },
+      { "question": "enfant", "answer": "child" },
+      { "question": "maison", "answer": "house" },
+      { "question": "chat", "answer": "cat" }
+    ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -56,15 +56,12 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with custom flashCardCount", async () => {
-    const mockFlashcards = [
-      { question: "hola", answer: "hello" },
-      { question: "adiós", answer: "goodbye" },
-      { question: "gracias", answer: "thank you" },
-    ];
+    const mockFlashcards = `[
+      { "question": "hola", "answer": "hello" }, { "question": "adiós", "answer": "goodbye" }, { "question": "gracias", "answer": "thank you" } ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -88,14 +85,11 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with custom language parameter", async () => {
-    const mockFlashcards = [
-      { question: "gato", answer: "cat" },
-      { question: "perro", answer: "dog" },
-    ];
+    const mockFlashcards = `[ { "question": "gato", "answer": "cat" }, { "question": "perro", "answer": "dog" } ]`;
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -108,7 +102,6 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
@@ -120,22 +113,12 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   });
 
   it("generates flashcards with all custom parameters", async () => {
-    const mockFlashcards = [
-      { question: "Wie geht's?", answer: "How are you?" },
-      { question: "Guten Tag", answer: "Good day" },
-      { question: "Danke", answer: "Thank you" },
-      { question: "Bitte", answer: "Please" },
-      { question: "Auf Wiedersehen", answer: "Goodbye" },
-      { question: "Ja", answer: "Yes" },
-      { question: "Nein", answer: "No" },
-      { question: "Entschuldigung", answer: "Excuse me" },
-      { question: "Sprechen Sie Englisch?", answer: "Do you speak English?" },
-      { question: "Ich verstehe nicht", answer: "I don't understand" },
-    ];
+    const mockFlashcards =
+      '[{ "question": "Wie gehts?", "answer": "How are you?" },{ "question": "Guten Tag", "answer": "Good day" },{ "question": "Danke", "answer": "Thank you" },{ "question": "Bitte", "answer": "Please" },{ "question": "Auf Wiedersehen", "answer": "Goodbye" },{ "question": "Ja", "answer": "Yes" },{ "question": "Nein", "answer": "No" },{ "question": "Entschuldigung", "answer": "Excuse me" },{ "question": "Sprechen Sie Englisch?", "answer": "Do you speak English?" },{ "question": "Ich verstehe nicht", "answer": "I dont understand" }]';
 
     mockGeminiResponse.mockResolvedValue(mockFlashcards);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -148,7 +131,6 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
 
     const response = await handler.default(event);
-
     expect(response).toHaveProperty("success", true);
     expect(response).toHaveProperty("flashcards");
     expect(GeminiClient.generateGeminiResponse).toHaveBeenCalledWith(
@@ -163,7 +145,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
   it("handles Gemini API errors gracefully", async () => {
     mockGeminiResponse.mockRejectedValue(new Error("API rate limit exceeded"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -183,7 +165,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     );
   });
   it("request body does not pass validation", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {},
@@ -198,7 +180,7 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     const invalidGeminiResponse = "This is not a valid JSON response";
 
     mockGeminiResponse.mockResolvedValue(invalidGeminiResponse);
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -216,10 +198,11 @@ describe("api/ai/flashcards POST endpoint tests", async () => {
     expect(response).toHaveProperty("statusMessage");
   });
   it("returns response from Gemini API", async () => {
-    const mockResponse = [{ question: "What is 2 + 2?", answer: "4" }];
+    const mockResponse = '[{ "question": "What is 2 + 2?", "answer": "4" }]';
+
     mockGeminiResponse.mockResolvedValue(mockResponse);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {

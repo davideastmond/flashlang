@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../db/index.ts";
+import { useH3TestUtils } from "../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -13,7 +13,7 @@ const mockWhere = vi.fn();
 const mockGroupBy = vi.fn();
 const mockOrderBy = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../db/index.ts", () => ({
   db: {
     select: vi.fn(),
   },
@@ -26,7 +26,7 @@ vi.mock("#auth", () => ({
 }));
 
 describe("api/studysets GET endpoint tests", async () => {
-  const handler = await import("../../../server/api/studysets/index.get.ts");
+  const handler = await import("../../../../server/api/studysets/index.get.ts");
   const authModule = await import("#auth");
 
   beforeEach(() => {
@@ -57,8 +57,8 @@ describe("api/studysets GET endpoint tests", async () => {
   it("returns 401 when user is not authenticated", async () => {
     mockGetServerSession.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -71,8 +71,8 @@ describe("api/studysets GET endpoint tests", async () => {
   it("returns 401 when session exists but has no user", async () => {
     mockGetServerSession.mockResolvedValue({ user: null });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -108,8 +108,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -133,8 +133,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -164,8 +164,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -195,8 +195,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -242,8 +242,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -277,8 +277,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     await handler.default(event);
@@ -305,8 +305,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -361,8 +361,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -395,8 +395,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -414,8 +414,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -433,8 +433,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue([]);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     await handler.default(event);
@@ -475,8 +475,8 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
@@ -503,15 +503,15 @@ describe("api/studysets GET endpoint tests", async () => {
 
     mockOrderBy.mockResolvedValue(mockStudySets);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
-      ({ createMockH3Event }) => createMockH3Event({})
+    const event = await import("../../../utils/mock-h3-event.ts").then(
+      ({ createMockH3Event }) => createMockH3Event({}),
     );
 
     const response = await handler.default(event);
 
     expect(response.data[0].title).toBe("Español & Français: L'étude! 🎓");
     expect(response.data[0].description).toBe(
-      "Special chars: @#$%^&*()_+-=[]{}|;':\",./<>?"
+      "Special chars: @#$%^&*()_+-=[]{}|;':\",./<>?",
     );
   });
 });
