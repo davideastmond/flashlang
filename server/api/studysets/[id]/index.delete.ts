@@ -1,5 +1,6 @@
 import { getServerSession } from "#auth";
 import { and, eq } from "drizzle-orm";
+import { getRouterParam } from "h3";
 import { db } from "~~/db";
 import { studySets } from "~~/db/schema";
 export default defineEventHandler(async (event) => {
@@ -11,15 +12,20 @@ export default defineEventHandler(async (event) => {
     });
   }
   const studySetId = getRouterParam(event, "id");
-
+  if (!studySetId || studySetId.trim() === "") {
+    return createError({
+      statusCode: 400,
+      statusMessage: "Study set ID is required",
+    });
+  }
   try {
     await db
       .delete(studySets)
       .where(
         and(
           eq(studySets.id, studySetId as string),
-          eq(studySets.userId, serverSession.user.id as string)
-        )
+          eq(studySets.userId, serverSession.user.id as string),
+        ),
       );
     // Delete a study set by its ID, ensuring it belongs to the authenticated user
     return {

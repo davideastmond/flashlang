@@ -1,8 +1,8 @@
 // @vitest-environment node
 import bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import * as dbModule from "../../../db/index.ts";
-import { useH3TestUtils } from "../../setup.ts";
+import * as dbModule from "../../../../db/index.ts";
+import { useH3TestUtils } from "../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
 
@@ -11,7 +11,7 @@ const mockInsert = vi.fn();
 const mockValues = vi.fn();
 const mockFindFirst = vi.fn();
 
-vi.mock("../../../db/index.ts", () => ({
+vi.mock("../../../../db/index.ts", () => ({
   db: {
     query: {
       users: {
@@ -23,7 +23,7 @@ vi.mock("../../../db/index.ts", () => ({
 }));
 
 describe("api/signup POST endpoint tests", async () => {
-  const handler = await import("../../../server/api/signup/index.post.ts");
+  const handler = await import("../../../../server/api/signup/index.post.ts");
 
   beforeEach(() => {
     mockInsert.mockClear();
@@ -42,7 +42,7 @@ describe("api/signup POST endpoint tests", async () => {
   it("successfully creates a new user with valid data", async () => {
     mockFindFirst.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -53,7 +53,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "SecurePass123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -68,7 +68,7 @@ describe("api/signup POST endpoint tests", async () => {
         email: "john.doe@example.com",
         passwordHash: expect.any(String),
         dateOfBirth: "2000-01-01",
-      })
+      }),
     );
   });
 
@@ -76,7 +76,7 @@ describe("api/signup POST endpoint tests", async () => {
     mockFindFirst.mockResolvedValue(null);
     const password = "TestPassword123!";
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -87,7 +87,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: password,
             dateOfBirth: "1995-06-15",
           },
-        })
+        }),
     );
 
     await handler.default(event);
@@ -98,7 +98,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for missing first name", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -109,7 +109,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -120,7 +120,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for missing last name", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -131,7 +131,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -141,7 +141,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for invalid email format", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -152,7 +152,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -162,7 +162,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for password too short", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -173,7 +173,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Pass1!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -183,7 +183,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for password without uppercase letter", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -194,7 +194,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -204,7 +204,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for password without lowercase letter", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -215,7 +215,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "PASSWORD123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -225,7 +225,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for password without number", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -236,7 +236,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -246,7 +246,7 @@ describe("api/signup POST endpoint tests", async () => {
   });
 
   it("returns validation error for password without special character", async () => {
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -257,7 +257,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -271,12 +271,12 @@ describe("api/signup POST endpoint tests", async () => {
     const tooYoungDate = new Date(
       today.getFullYear() - 12,
       today.getMonth(),
-      today.getDate()
+      today.getDate(),
     )
       .toISOString()
       .split("T")[0];
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -287,7 +287,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: tooYoungDate,
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -303,7 +303,7 @@ describe("api/signup POST endpoint tests", async () => {
       name: "Existing User",
     });
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -314,7 +314,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -327,7 +327,7 @@ describe("api/signup POST endpoint tests", async () => {
   it("returns database error when findFirst query fails", async () => {
     mockFindFirst.mockRejectedValue(new Error("Database connection failed"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -338,7 +338,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -351,7 +351,7 @@ describe("api/signup POST endpoint tests", async () => {
     mockFindFirst.mockResolvedValue(null);
     mockValues.mockRejectedValue(new Error("Insert failed"));
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -362,7 +362,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     const response = await handler.default(event);
@@ -374,7 +374,7 @@ describe("api/signup POST endpoint tests", async () => {
   it("generates a valid UUID for new user", async () => {
     mockFindFirst.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -385,7 +385,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "2000-01-01",
           },
-        })
+        }),
     );
 
     await handler.default(event);
@@ -399,7 +399,7 @@ describe("api/signup POST endpoint tests", async () => {
   it("concatenates first and last name correctly", async () => {
     mockFindFirst.mockResolvedValue(null);
 
-    const event = await import("../../utils/mock-h3-event.ts").then(
+    const event = await import("../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({
           body: {
@@ -410,7 +410,7 @@ describe("api/signup POST endpoint tests", async () => {
             password2: "Password123!",
             dateOfBirth: "1998-03-20",
           },
-        })
+        }),
     );
 
     await handler.default(event);
