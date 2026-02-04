@@ -194,6 +194,7 @@
 
 <script setup lang="ts">
 import AiGenerationModal from '~/components/ai-generation-modal.vue';
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 import type { AIFormAttributes } from '~~/shared/types/definitions/ai-form-attributes';
 import type { FlashCard } from '~~/shared/types/definitions/flash-card';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
@@ -291,7 +292,7 @@ const handleSubmit = async () => {
       throw new Error('No study set ID returned from API');
     }
 
-    await navigateTo(`/user/studysets/${toShortenedUuid(response.data as string)}`);
+    await navigateTo(`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(response.data as string)}`);
   } catch (error) {
     console.error('Error creating study set:', error);
     errorMessage.value = 'Failed to create study set. Please try again.';
@@ -350,10 +351,10 @@ const handleAiGenerate = async (attributes: AIFormAttributes) => {
       );
       closeAiModal();
       successMessage.value = `Successfully generated flashcards with AI!`;
-      await navigateTo(`/user/studysets/${toShortenedUuid(aiResponse.data as string)}`);
+      await navigateTo(`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(aiResponse.data as string)}`);
     } catch (error) {
       console.error('Error creating study set from AI generated flashcards:', error);
-      errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try    again.';
+      errorMessage.value = 'Failed to create study set from AI generated flashcards. Please try again.';
       return;
     }
   } catch (error) {

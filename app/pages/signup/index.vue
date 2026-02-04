@@ -95,7 +95,8 @@
         <!-- Login Link -->
         <div class="text-center mt-7 text-sm text-slate-400">
           Already have an account?
-          <NuxtLink to="/login" class="text-purple-400 hover:text-purple-300 font-semibold ml-1 transition-colors">
+          <NuxtLink :to="PAGE_LINKS.LOGIN"
+            class="text-purple-400 hover:text-purple-300 font-semibold ml-1 transition-colors">
             Sign in
           </NuxtLink>
         </div>
@@ -106,6 +107,7 @@
 
 <script setup lang="ts">
 import { z } from 'zod';
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 import { signupFormValidator } from '~~/shared/validators/signup/signup-validator';
 const { signIn } = useAuth();
 const firstName = ref('')
@@ -163,7 +165,7 @@ const handleSignup = async () => {
       email: email.value,
       password: password1.value,
       redirect: true,
-      callbackUrl: '/user/dashboard'
+      callbackUrl: PAGE_LINKS.DASHBOARD
     })
   } catch (error) {
     console.error("Signup API error:", error);

@@ -200,6 +200,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
@@ -228,7 +229,7 @@ const { data: stats } = await useFetch<StatsType>('/api/user/profile/stats');
 // Handle create session
 async function handleCreateSession() {
   // Navigate to create session page
-  await navigateTo('/user/studysets/new');
+  await navigateTo(`${PAGE_LINKS.USER_STUDYSETS}/new`);
 }
 
 // Format date
