@@ -9,7 +9,7 @@
           <!-- Create New Study Set Card -->
           <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-indigo-500">
-            <NuxtLink to="/user/studysets/new">
+            <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg class="h-12 w-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@
           <!-- Browse Sessions Card -->
           <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-green-500">
-            <NuxtLink to="/user/studysets/view">
+            <NuxtLink :to="PAGE_LINKS.VIEW_STUDYSETS">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg class="h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">

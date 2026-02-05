@@ -125,7 +125,7 @@
 
         <!-- Form Actions -->
         <div class="flex items-center justify-between gap-4">
-          <NuxtLink to="/user/studysets/view"
+          <NuxtLink :to="PAGE_LINKS.VIEW_STUDYSETS"
             class="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors font-medium">
             Cancel
           </NuxtLink>

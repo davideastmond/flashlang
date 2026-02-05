@@ -75,7 +75,7 @@
                 ({{ formatPercentageScore(studySet.lastStudiedAt.correctCount, studySet.lastStudiedAt.totalCount) }})
               </span>
             </div>
-            <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySet.id)}/practice`">
+            <NuxtLink :to="`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(studySet.id)}/practice`">
               <button
                 class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
                 now</button>
