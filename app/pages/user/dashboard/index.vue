@@ -149,7 +149,7 @@
 
           <ul v-else class="divide-y divide-gray-700">
             <NuxtLink v-for="session in stats?.recentSessions" :key="session.id"
-              :to="`/user/studysets/${toShortenedUuid(session.studySetId)}`" class="block">
+              :to="`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(session.studySetId)}`" class="block">
               <li class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <div class="flex items-center justify-between">
                   <div class="flex-1 min-w-0">
