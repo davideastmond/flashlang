@@ -9,7 +9,7 @@
           <!-- Create New Study Set Card -->
           <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-indigo-500">
-            <NuxtLink to="/user/studysets/new">
+            <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg class="h-12 w-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -27,7 +27,7 @@
           <!-- Browse Sessions Card -->
           <div
             class="bg-gray-800/60 backdrop-blur-sm rounded-lg shadow-lg p-6 cursor-pointer hover:shadow-2xl hover:bg-gray-800/80 transition-all border-2 border-gray-700 hover:border-green-500">
-            <NuxtLink to="/user/studysets/view">
+            <NuxtLink :to="PAGE_LINKS.VIEW_STUDYSETS">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <svg class="h-12 w-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -149,7 +149,7 @@
 
           <ul v-else class="divide-y divide-gray-700">
             <NuxtLink v-for="session in stats?.recentSessions" :key="session.id"
-              :to="`/user/studysets/${toShortenedUuid(session.studySetId)}`" class="block">
+              :to="`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(session.studySetId)}`" class="block">
               <li class="p-4 sm:p-6 hover:bg-gray-700/50 cursor-pointer transition-colors">
                 <div class="flex items-center justify-between">
                   <div class="flex-1 min-w-0">
@@ -200,6 +200,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 definePageMeta({
   auth: true,
   middleware: ['sidebase-auth'],
@@ -228,7 +229,7 @@ const { data: stats } = await useFetch<StatsType>('/api/user/profile/stats');
 // Handle create session
 async function handleCreateSession() {
   // Navigate to create session page
-  await navigateTo('/user/studysets/new');
+  await navigateTo(`${PAGE_LINKS.USER_STUDYSETS}/new`);
 }
 
 // Format date

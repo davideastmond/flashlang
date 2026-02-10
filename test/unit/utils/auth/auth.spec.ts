@@ -103,7 +103,7 @@ describe("Auth Options Tests", () => {
       // @ts-expect-error - accessing internal authorize method
       await expect(
         credentialsProvider.authorize(mockCredentials),
-      ).rejects.toThrow("We couldn't find a user with these credentials.");
+      ).rejects.toThrow("Please check your credentials and try again.");
     });
 
     it("should throw error when password is invalid", async () => {
@@ -123,7 +123,7 @@ describe("Auth Options Tests", () => {
       const credentialsProvider = authOptions.providers[0];
       // @ts-expect-error - accessing internal authorize method
       await expect(credentialsProvider.authorize({})).rejects.toThrow(
-        "We couldn't find a user with these credentials.",
+        "Please check your credentials and try again.",
       );
 
       expect(db.query.users.findFirst).toHaveBeenCalledWith({

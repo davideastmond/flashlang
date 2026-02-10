@@ -9,7 +9,7 @@
     <div v-else-if="error" class="flex items-center justify-center min-h-screen">
       <div class="bg-red-500/10 border border-red-500 rounded-lg p-6 max-w-md">
         <p class="text-red-400">{{ error }}</p>
-        <NuxtLink to="/user/dashboard"
+        <NuxtLink :to="PAGE_LINKS.DASHBOARD"
           class="mt-4 inline-block text-indigo-400 hover:text-indigo-300 transition-colors">
           ← Back to Dashboard
         </NuxtLink>
@@ -19,7 +19,7 @@
     <!-- Main Content -->
     <div v-else-if="studySet" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Back Button -->
-      <NuxtLink to="/user/dashboard"
+      <NuxtLink :to="PAGE_LINKS.DASHBOARD"
         class="inline-flex items-center text-gray-400 hover:text-white transition-colors mb-6">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -75,7 +75,7 @@
                 ({{ formatPercentageScore(studySet.lastStudiedAt.correctCount, studySet.lastStudiedAt.totalCount) }})
               </span>
             </div>
-            <NuxtLink :to="`/user/studysets/${toShortenedUuid(studySet.id)}/practice`">
+            <NuxtLink :to="`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(studySet.id)}/practice`">
               <button
                 class="px-4 py-3 text-lime-500 hover:text-lime-700 rounded-lg transition-colors font-medium">Practice
                 now</button>
@@ -280,6 +280,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_LINKS } from "~~/shared/constants/page-links";
 import type { FlashCard } from "~~/shared/types/definitions/flash-card";
 import type { StudySet } from "~~/shared/types/definitions/study-set";
 import { getFullUuid } from "~~/shared/utils/uuid-convert";
@@ -402,7 +403,7 @@ const confirmDeleteStudySet = async () => {
       method: "DELETE",
     });
     // Upon successful delete, redirect to dashboard
-    await navigateTo("/user/dashboard");
+    await navigateTo(PAGE_LINKS.DASHBOARD);
   } catch (error) {
     console.error("Error deleting study set:", error);
     alert("Failed to delete study set");

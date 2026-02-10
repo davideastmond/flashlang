@@ -13,15 +13,16 @@
         <h4 class="text-lg font-medium mb-3 text-white">Quick Links</h4>
         <ul class="list-none p-0 m-0 space-y-2">
           <li>
-            <NuxtLink to="/" class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Home
+            <NuxtLink :to="PAGE_LINKS.HOME"
+              class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Home
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/user/dashboard"
+            <NuxtLink :to="PAGE_LINKS.DASHBOARD"
               class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Dashboard</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/user/studysets/new"
+            <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET"
               class="text-gray-400 hover:text-blue-400 transition-colors duration-300 no-underline">Create Study Set
             </NuxtLink>
           </li>
@@ -76,5 +77,6 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_LINKS } from "~~/shared/constants/page-links";
 const currentYear = computed(() => new Date().getFullYear())
 </script>

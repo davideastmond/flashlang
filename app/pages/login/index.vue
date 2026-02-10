@@ -51,7 +51,8 @@
         <!-- Sign Up Link -->
         <div class="text-center mt-7 text-sm text-slate-400">
           Don't have an account?
-          <NuxtLink to="/signup" class="text-purple-400 hover:text-purple-300 font-semibold ml-1 transition-colors">
+          <NuxtLink :to="PAGE_LINKS.SIGNUP"
+            class="text-purple-400 hover:text-purple-300 font-semibold ml-1 transition-colors">
             Sign up
           </NuxtLink>
         </div>
@@ -61,6 +62,8 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
+
 const { signIn } = useAuth();
 const email = ref('')
 const password = ref('')
@@ -76,14 +79,14 @@ const handleSignin = async () => {
       redirect: false,
       email: email.value,
       password: password.value,
-      callbackUrl: '/user/dashboard',
+      callbackUrl: PAGE_LINKS.DASHBOARD,
     })
     if (error) {
       apiError.value = error;
       return;
     }
     // If all goes ok, redirect to dashboard
-    await navigateTo('/user/dashboard');
+    await navigateTo(PAGE_LINKS.DASHBOARD);
   } catch (error) {
     apiError.value = 'An unexpected error occurred. Please try again later.';
     console.error('SignIn error:', error)
