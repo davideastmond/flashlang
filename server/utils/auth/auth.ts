@@ -19,7 +19,7 @@ export const authOptions: AuthOptions = {
           where: (users, { eq }) => eq(users.email, credentials?.email ?? ""),
         });
         if (!queryUser) {
-          throw new Error("We couldn't find a user with these credentials.");
+          throw new Error("Please check your credentials and try again.");
         }
 
         const isPasswordValid = await bcrypt.compare(
