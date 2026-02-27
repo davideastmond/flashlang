@@ -33,7 +33,7 @@
             <h3 class="text-xl font-semibold text-gray-400 mb-2">No Study Sets Found</h3>
             <p class="text-gray-500">Create your first study set to get started</p>
           </div>
-          <NuxtLink to="/user/studysets/new"
+          <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET"
             class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors">
             Create Study Set
           </NuxtLink>
@@ -43,7 +43,7 @@
         <div v-else>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             <NuxtLink v-for="studySet in paginatedStudySets" :key="studySet.id"
-              :to="`/user/studysets/${toShortenedUuid(studySet.id)}`"
+              :to="`${PAGE_LINKS.USER_STUDYSETS}/${toShortenedUuid(studySet.id)}`"
               class="group bg-gray-800 border border-gray-700 rounded-lg p-6 hover:border-blue-500 hover:shadow-lg hover:shadow-blue-500/20 transition-all duration-200 cursor-pointer">
               <!-- Card Header -->
               <div class="flex justify-between items-start mb-4">
@@ -112,6 +112,7 @@
 
 <script setup lang="ts">
 // Define types for study sets
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 import type { StudySet } from '~~/shared/types/definitions/study-set';
 import { toShortenedUuid } from '~~/shared/utils/uuid-convert';
 

@@ -16,7 +16,7 @@
             Try our interactive demo and see the difference.
           </p>
           <div class="flex flex-wrap justify-center gap-4">
-            <NuxtLink to="/signup">
+            <NuxtLink :to="PAGE_LINKS.SIGNUP">
               <button
                 class="px-8 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white rounded-lg font-semibold shadow-lg transition-all transform hover:scale-105">
                 Get Started Free
@@ -208,13 +208,13 @@
           Start your journey today with our free plan.
         </p>
         <div v-if="status !== 'authenticated'" class="flex flex-wrap justify-center gap-4">
-          <NuxtLink to="/signup">
+          <NuxtLink :to="PAGE_LINKS.SIGNUP">
             <button
               class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-lg rounded-lg font-semibold shadow-lg transition-all transform hover:scale-105">
               Create Free Account
             </button>
           </NuxtLink>
-          <NuxtLink to="/login">
+          <NuxtLink :to="PAGE_LINKS.LOGIN">
             <button
               class="px-8 py-4 bg-gray-700 hover:bg-gray-600 text-white text-lg rounded-lg font-semibold shadow-lg transition-all">
               Sign In
@@ -222,7 +222,7 @@
           </NuxtLink>
         </div>
         <div v-else>
-          <NuxtLink to="/user/dashboard">
+          <NuxtLink :to="PAGE_LINKS.DASHBOARD">
             <button
               class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-lg rounded-lg font-semibold shadow-lg transition-all transform hover:scale-105">
               Go to Dashboard
@@ -243,6 +243,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
 import { SUPPORTED_LANGUAGES } from '~~/shared/types/definitions/supported-languages';
 const { status } = useAuth();
 const demoSection = ref<HTMLElement | null>(null);

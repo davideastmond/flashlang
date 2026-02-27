@@ -5,20 +5,21 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <!-- Logo -->
-        <NuxtLink to="/user/dashboard" class="flex items-center space-x-2">
+        <NuxtLink :to="PAGE_LINKS.DASHBOARD" class="flex items-center space-x-2">
           <NuxtImg src="favicon.svg" alt="FlashLang Logo" width="24" height="24" />
           <h1 class="text-2xl font-bold text-white">FlashLang</h1>
         </NuxtLink>
 
         <!-- Desktop Navigation -->
         <div class="hidden md:flex items-center space-x-8">
-          <NuxtLink to="/user/dashboard" class="text-gray-300 hover:text-white transition-colors font-medium">
+          <NuxtLink :to="PAGE_LINKS.DASHBOARD" class="text-gray-300 hover:text-white transition-colors font-medium">
             Dashboard
           </NuxtLink>
-          <NuxtLink to="/user/studysets/view" class="text-gray-300 hover:text-white transition-colors font-medium">
+          <NuxtLink :to="PAGE_LINKS.VIEW_STUDYSETS"
+            class="text-gray-300 hover:text-white transition-colors font-medium">
             Study Sets
           </NuxtLink>
-          <NuxtLink to="/user/studysets/new" class="text-gray-300 hover:text-white transition-colors font-medium">
+          <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET" class="text-gray-300 hover:text-white transition-colors font-medium">
             Create Set
           </NuxtLink>
         </div>
@@ -66,7 +67,7 @@
 
           <!-- Mobile Menu Items -->
           <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
-            <NuxtLink to="/user/dashboard" @click="closeMenu"
+            <NuxtLink :to="PAGE_LINKS.DASHBOARD" @click="closeMenu"
               class="flex items-center px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -74,7 +75,7 @@
               </svg>
               Dashboard
             </NuxtLink>
-            <NuxtLink to="/user/studysets/view" @click="closeMenu"
+            <NuxtLink :to="PAGE_LINKS.VIEW_STUDYSETS" @click="closeMenu"
               class="flex items-center px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -82,7 +83,7 @@
               </svg>
               Study Sets
             </NuxtLink>
-            <NuxtLink to="/user/studysets/new" @click="closeMenu"
+            <NuxtLink :to="PAGE_LINKS.NEW_STUDYSET" @click="closeMenu"
               class="flex items-center px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-700 rounded-lg transition-colors">
               <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
@@ -116,6 +117,8 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_LINKS } from '~~/shared/constants/page-links';
+
 const { displayText } = defineProps<{
   displayText: string;
 }>();
@@ -133,7 +136,7 @@ const closeMenu = () => {
 
 const handleSignOut = async () => {
   closeMenu();
-  await signOut({ redirect: true, callbackUrl: '/login' });
+  await signOut({ redirect: true, callbackUrl: PAGE_LINKS.LOGIN });
 };
 
 // Close menu on route change
