@@ -4,8 +4,7 @@ import {
   answerJudgeBodyValidator,
   type AnswerJudgeBody,
 } from "~~/shared/validators/answer-judge-body-validator/answer-judge-body-validator";
-
-import { generateOpenAIResponse } from "../../../utils/open-ai/open-ai-client";
+import { generateGeminiResponse } from "../../../utils/gemini/gemini-client";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<AnswerJudgeBody>(event);
@@ -28,13 +27,13 @@ export default defineEventHandler(async (event) => {
     Respond with a JSON object with two keys: one that shows whether the user's answer is correct and the other, a short reasoning.
     an example response: { isCorrect: true, reasoning: "The user's answer is a synonym of the correct answer." };
     an example response: { isCorrect: false, reasoning: "The user's answer has significant spelling mistakes and does not match the meaning of the correct answer." }
-    Do not respond with anything other than the JSON object. Ensure your response can be parsed with JSON.parse().
+    Do not respond with anything other than the JSON object. The response should be in the format { isCorrect: boolean, reasoning: string }.
   `;
 
   try {
-    const response = await generateOpenAIResponse(prompt);
+    const response = await generateGeminiResponse(prompt);
     try {
-      answerJudgeAIResponseFormatValidator.parse(JSON.parse(response));
+      answerJudgeAIResponseFormatValidator.parse(JSON.parse(response!));
       return {
         success: true,
         data: response,
