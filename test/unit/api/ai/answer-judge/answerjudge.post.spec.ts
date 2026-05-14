@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it, vi } from "vitest";
-import * as OpenAIData from "../../../../../server/utils/open-ai/open-ai-client.ts";
+import * as GoogleGeminiData from "../../../../../server/utils/gemini/gemini-client.ts";
 import { useH3TestUtils } from "../../../../setup.ts";
 
 const { defineEventHandler } = useH3TestUtils();
@@ -8,7 +8,7 @@ const { defineEventHandler } = useH3TestUtils();
 const mockAIResponse = vi.fn();
 // Simple mock implementation based on the prompt content
 
-vi.spyOn(OpenAIData, "generateOpenAIResponse").mockImplementation(() =>
+vi.spyOn(GoogleGeminiData, "generateGeminiResponse").mockImplementation(() =>
   mockAIResponse(),
 );
 describe("api/ai/answerjudge POST endpoint tests", async () => {
@@ -76,8 +76,8 @@ describe("api/ai/answerjudge POST endpoint tests", async () => {
       "Invalid response format from AI.",
     );
   });
-  it("handles OpenAI errors gracefully", async () => {
-    mockAIResponse.mockRejectedValue(new Error("OpenAI API error"));
+  it("handles Gemini errors gracefully", async () => {
+    mockAIResponse.mockRejectedValue(new Error("Gemini API error"));
     const event = await import("../../../../utils/mock-h3-event.ts").then(
       ({ createMockH3Event }) =>
         createMockH3Event({

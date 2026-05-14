@@ -4,6 +4,7 @@ import {
   answerJudgeBodyValidator,
   type AnswerJudgeBody,
 } from "~~/shared/validators/answer-judge-body-validator/answer-judge-body-validator";
+import { generateGeminiResponse } from "../../../utils/gemini/gemini-client";
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<AnswerJudgeBody>(event);
@@ -31,7 +32,6 @@ export default defineEventHandler(async (event) => {
 
   try {
     const response = await generateGeminiResponse(prompt);
-    console.info("Raw AI response:", response);
     try {
       answerJudgeAIResponseFormatValidator.parse(JSON.parse(response!));
       return {
