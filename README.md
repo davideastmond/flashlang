@@ -19,7 +19,7 @@ Users can also use AI to generate decks based on specific topics or themes.
 - Create study sets (decks) and flashcards
 - Edit and delete flashcards and study sets
 - Create study sets using Gemini to provide AI Flashcard generation
-- Using OpenAI to adjudicate answers in practice mode
+- Using Google Gemini to adjudicate answers in practice mode
 - Statistics tracking via dashboard
 - Dictation of answers using the Web Speech Browser API
 
@@ -36,7 +36,6 @@ Users can also use AI to generate decks based on specific topics or themes.
 ### AI
 
 - Gemini-Flash API
-- Open AI API
 
 ### Database Stack
 
@@ -76,7 +75,6 @@ DATABASE_URL=*your_neon_db_connection_string*
 AUTH_SECRET=*your_secret_key - you can generate a string*
 AUTH_ORIGIN=http://localhost:3000/api/auth
 GEMINI_API_KEY=*obtain from google console*
-OPENAI_API_KEY=*obtain from openai*
 ```
 
 ## Migrations
